@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Veille Reconversion Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0ede8;color:#1a1a1a;min-height:100vh}
+.topbar{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:15px;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.container{padding:20px;max-width:1100px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e5e3dc}
+.stat-n{font-size:26px;font-weight:700}.stat-l{font-size:11px;color:#888;margin-top:2px}
+.toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;transition:all .15s}
+.filter-btn.active-hot{background:#fce4e1;border-color:#c0392b;color:#922b21;font-weight:600}
+.filter-btn.active-warm{background:#fef9e7;border-color:#d68910;color:#7d6608;font-weight:600}
+.filter-btn.active-cold{background:#eafaf1;border-color:#27ae60;color:#1e5631;font-weight:600}
+.filter-btn.active-all{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.refresh-btn{margin-left:auto;padding:8px 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}
+.refresh-btn:hover{background:#333}
+.cards{display:flex;flex-direction:column;gap:10px}
+.card{background:#fff;border-radius:12px;padding:16px;border:1px solid #e5e3dc;border-left:4px solid #ddd;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card.hot{border-left-color:#c0392b}.card.warm{border-left-color:#e67e22}.card.cold{border-left-color:#27ae60}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.card-left{display:flex;gap:10px;align-items:center}
+.ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.card-name{font-size:14px;font-weight:600}.card-meta{font-size:11px;color:#888;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+.badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:9px}
+.b-hot{background:#fce4e1;color:#922b21}.b-warm{background:#fef5e7;color:#7d6608}.b-cold{background:#eafaf1;color:#1e5631}.b-kw{background:#f3e8ff;color:#6b21a8}
+.title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:6px}
+.text{font-size:13px;color:#555;line-height:1.6;background:#f8f7f4;border-left:2px solid #ddd;padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:8px}
+.analysis{font-size:12px;color:#444;background:#f0f0ee;border-radius:7px;padding:8px 12px;line-height:1.5}
+.analysis b{color:#1a1a1a}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.src-link{font-size:12px;color:#2563eb;text-decoration:none}.src-link:hover{text-decoration:underline}
+.loading{text-align:center;padding:60px;color:#888}
+.spinner{width:32px;height:32px;border:2px solid #eee;border-top-color:#1a1a1a;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px;color:#bbb;font-size:14px}
+.group-title{font-size:13px;font-weight:700;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div><h1><span class="dot"></span>Veille Reconversion Pro - Bilan de competences CPF</h1></div>
+  <span id="lastUpdate" style="font-size:11px;color:#888">Pret</span>
+</div>
+<div class="container">
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="sTotal">0</div><div class="stat-l">Posts analyses</div></div>
+    <div class="stat"><div class="stat-n" id="sHot" style="color:#c0392b">0</div><div class="stat-l">Prospects chauds</div></div>
+    <div class="stat"><div class="stat-n" id="sWarm" style="color:#e67e22">0</div><div class="stat-l">Prospects tiedesdes</div></div>
+    <div class="stat"><div class="stat-n" id="sCold" style="color:#27ae60">0</div><div class="stat-l">Veille froide</div></div>
+  </div>
+  <div class="toolbar">
+    <button class="filter-btn active-all" onclick="setFilter('all')" id="f-all">Tous</button>
+    <button class="filter-btn" onclick="setFilter('hot')" id="f-hot">Chauds</button>
+    <button class="filter-btn" onclick="setFilter('warm')" id="f-warm">Tiedesdes</button>
+    <button class="filter-btn" onclick="setFilter('cold')" id="f-cold">Froid</button>
+    <button class="refresh-btn" onclick="loadData()">Actualiser Reddit</button>
+  </div>
+  <div id="results"><div class="loading"><div class="spinner"></div>Chargement...</div></div>
+</div>
+<script>
+var AVA=[['#fdebd0','#935116'],['#eaf0fb','#154360'],['#e8f0e8','#2a5e2d'],['#fce4e1','#922b21'],['#fef9e7','#7d6608'],['#f4ecf7','#6c3483'],['#d5f5e3','#1e5631'],['#fde8d8','#7b241c']];
+var allPosts=[],currentFilter='all';
+function ava(n){var c=AVA[(n||'A').charCodeAt(0)%AVA.length];return 'background:'+c[0]+';color:'+c[1];}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtDate(ts){if(!ts)return '?';return new Date(ts*1000).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});}
+function qualifyHeat(p){var t=(p.title+' '+p.text+' '+(p.keyword||'')).toLowerCase();if(t.indexOf('bilan de comp')>-1||t.indexOf('cpf')>-1)return 'hot';if(t.indexOf('burn')>-1||t.indexOf('reconversion')>-1||t.indexOf('changer de m')>-1||t.indexOf('souffrance')>-1||t.indexOf('rupture')>-1)return 'warm';return 'cold';}
+function getAnalysis(p){var t=(p.title+' '+p.text).toLowerCase();if(p.heat==='hot')return 'Mentionne bilan CPF - prospect prioritaire.';if(t.indexOf('burn')>-1)return 'Burn-out mentionne - tres receptif.';if(t.indexOf('reconversion')>-1)return 'En reflexion active - ideal pour bilan CPF.';return 'Signal a surveiller.';}
+function setFilter(f){currentFilter=f;['all','hot','warm','cold'].forEach(function(x){document.getElementById('f-'+x).className='filter-btn'+(x===f?' active-'+f:'');});renderPosts();}
+function updateStats(){document.getElementById('sTotal').textContent=allPosts.length;document.getElementById('sHot').textContent=allPosts.filter(function(p){return p.heat==='hot';}).length;document.getElementById('sWarm').textContent=allPosts.filter(function(p){return p.heat==='warm';}).length;document.getElementById('sCold').textContent=allPosts.filter(function(p){return p.heat==='cold';}).length;}
+function renderPosts(){var filtered=currentFilter==='all'?allPosts:allPosts.filter(function(p){return p.heat===currentFilter;});var box=document.getElementById('results');if(!filtered.length){box.innerHTML='<div class=empty>Aucun resultat</div>';return;}var groups={hot:[],warm:[],cold:[]};filtered.forEach(function(p){groups[p.heat].push(p);});var labels={hot:'Prospects chauds',warm:'Tiedesdes',cold:'Veille froide'};var bc={hot:'b-hot',warm:'b-warm',cold:'b-cold'};var cc={hot:'#fce4e1',warm:'#fef5e7',cold:'#eafaf1'};var tc={hot:'#922b21',warm:'#7d6608',cold:'#1e5631'};var html='';['hot','warm','cold'].forEach(function(h){if(!groups[h].length)return;html+='<div class=group-title>'+labels[h]+'<span class=count style=background:'+cc[h]+';color:'+tc[h]+'>'+groups[h].length+'</span></div><div class=cards>';groups[h].forEach(function(p){var init=(p.author||'?').substring(0,2).toUpperCase();html+='<div class="card '+h+'"><div class=card-top><div class=card-left><div class=ava style="'+ava(p.author||'A')+'">'+init+'</div><div><div class=card-name>u/'+esc(p.author)+'</div><div class=card-meta><span>'+fmtDate(p.date)+'</span><span>r/'+esc(p.subreddit)+'</span><span>+'+p.score+'</span><span>'+p.comments+'</span></div></div></div><div class=badges><span class="badge b-kw">'+esc(p.keyword)+'</span><span class="badge '+bc[h]+'">'+(h==='hot'?'CHAUD':h==='warm'?'TIEDE':'FROID')+'</span></div></div><div class=title>'+esc(p.title)+'</div><div class=text>'+esc(p.text.substring(0,300))+'...</div><div class=analysis><b>Analyse:</b> '+getAnalysis(p)+'</div><div class=card-foot><a class=src-link href='+p.url+' target=_blank>Voir sur Reddit</a></div></div>';});html+='</div>';});box.innerHTML=html;}
+async function loadData(){document.getElementById('results').innerHTML='<div class=loading><div class=spinner></div>Recherche Reddit...</div>';try{var r=await fetch('/search');var data=await r.json();var seen={};data.posts.forEach(function(p){if(!seen[p.id]){seen[p.id]=1;p.heat=qualifyHeat(p);allPosts.push(p);}});updateStats();renderPosts();document.getElementById('lastUpdate').textContent='Mis a jour '+new Date().toLocaleTimeString('fr-FR');}catch(e){document.getElementById('results').innerHTML='<div class=empty>Erreur serveur</div>';}}
+loadData();
+</script>
+</body>
+</html>
