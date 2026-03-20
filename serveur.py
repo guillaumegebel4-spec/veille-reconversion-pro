@@ -6,7 +6,12 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-SUBREDDITS = ["france", "emploi", "travail"]
+SUBREDDITS = [
+    "france", "emploi", "travail",
+    "AskFrance", "poleemploi", "formation",
+    "conseils_juridiques", "viesdefamille"
+]
+
 KEYWORDS = [
     "reconversion professionnelle",
     "burn-out",
@@ -14,7 +19,10 @@ KEYWORDS = [
     "changer de metier",
     "rupture conventionnelle",
     "bilan de competences",
-    "plus de sens au travail"
+    "plus de sens au travail",
+    "demission",
+    "licenciement",
+    "mal au travail"
 ]
 
 @app.route('/')
@@ -28,7 +36,8 @@ def search():
     headers = {"User-Agent": "VeilleReconversion/1.0"}
     subs = "+".join(SUBREDDITS)
     for kw in KEYWORDS:
-        url = "https://www.reddit.com/r/{}/search.json?q={}&restrict_sr=1&sort=new&limit=10&t=month".format(subs, requests.utils.quote(kw))
+        url = "https://www.reddit.com/r/{}/search.json?q={}&restrict_sr=1&sort=new&limit=10&t=month".format(
+            subs, requests.utils.quote(kw))
         try:
             r = requests.get(url, headers=headers, timeout=10)
             if r.status_code == 200:
@@ -37,7 +46,19 @@ def search():
                     d = p["data"]
                     text = d.get("selftext", "")
                     if len(text) > 80:
-                        results.append({"id": d.get("id"), "author": d.get("author"), "subreddit": d.get("subreddit"), "title": d.get("title"), "text": text[:500], "score": d.get("score", 0), "comments": d.get("num_comments", 0), "url": "https://reddit.com" + d.get("permalink", ""), "date": d.get("created_utc"), "keyword": kw})
+                        results.append({
+                            "id": d.get("id"),
+                            "author": d.get("author"),
+                            "subreddit": d.get("subreddit"),
+                            "title": d.get("title"),
+                            "text": text[:500],
+                            "score": d.get("score", 0),
+                            "comments": d.get("num_comments", 0),
+                            "url": "https://reddit.com" + d.get("permalink", ""),
+                            "date": d.get("created_utc"),
+                            "keyword": kw,
+                            "source": "Reddit"
+                        })
         except Exception as e:
             print("Erreur {}: {}".format(kw, e))
     seen = set()
@@ -46,6 +67,7 @@ def search():
         if item["id"] not in seen:
             seen.add(item["id"])
             unique.append(item)
+    unique.sort(key=lambda x: x.get("date", 0), reverse=True)
     return jsonify({"posts": unique, "total": len(unique)})
 
 if __name__ == '__main__':
