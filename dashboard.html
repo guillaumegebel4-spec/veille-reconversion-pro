@@ -2,310 +2,158 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Veille Reconversion Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal — Pipeline Prospects CPF</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Bricolage+Grotesque:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+:root{--bg:#f5f3ee;--bg2:#fff;--bg3:#f0ede8;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1a1a1a;--text2:#666;--text3:#999;--red:#c0392b;--red-l:#fce4e1;--red-b:rgba(192,57,43,0.2);--amber:#b7770d;--amber-l:#fef3cd;--amber-b:rgba(183,119,13,0.2);--green:#1e6b3a;--green-l:#d4edda;--green-b:rgba(30,107,58,0.2);--purple:#534ab7;--purple-l:#eeedfe;--purple-b:rgba(83,74,183,0.2);--radius:8px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0ede8;color:#1a1a1a;min-height:100vh}
-.topbar{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
-.topbar h1{font-size:15px;font-weight:600}
-.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
-.dot.loading{background:#f59e0b}
-.dot.error{background:#ef4444;animation:none}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.topbar-right{display:flex;align-items:center;gap:14px}
-#lastUpdate{font-size:11px;color:#aaa}
-#autoRefreshInfo{font-size:10px;color:#666;background:#2a2a2a;padding:3px 8px;border-radius:10px}
-.container{padding:20px;max-width:1100px;margin:0 auto}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e5e3dc;position:relative;overflow:hidden}
-.stat-n{font-size:26px;font-weight:700}
-.stat-l{font-size:11px;color:#888;margin-top:2px}
-.stat-new{position:absolute;top:8px;right:10px;font-size:9px;font-weight:700;background:#fef3c7;color:#d97706;padding:2px 6px;border-radius:8px}
-.toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
-.filter-btn{padding:6px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;transition:all .15s}
-.filter-btn.active-hot{background:#fce4e1;border-color:#c0392b;color:#922b21;font-weight:600}
-.filter-btn.active-warm{background:#fef9e7;border-color:#d68910;color:#7d6608;font-weight:600}
-.filter-btn.active-cold{background:#eafaf1;border-color:#27ae60;color:#1e5631;font-weight:600}
-.filter-btn.active-all{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.sort-select{padding:6px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;outline:none}
-.refresh-btn{margin-left:auto;padding:8px 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s}
-.refresh-btn:hover{background:#333}
-.refresh-btn.spinning .spin-icon{animation:spin .7s linear infinite;display:inline-block}
-.cards{display:flex;flex-direction:column;gap:10px}
-.card{background:#fff;border-radius:12px;padding:16px;border:1px solid #e5e3dc;border-left:4px solid #ddd;animation:fadeIn .25s ease;position:relative}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.card.hot{border-left-color:#c0392b}
-.card.warm{border-left-color:#e67e22}
-.card.cold{border-left-color:#27ae60}
-.card.is-new{box-shadow:0 0 0 2px #fbbf24}
-.badge-new{font-size:9px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:8px;border:1px solid #fcd34d}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
-.card-left{display:flex;gap:10px;align-items:center}
-.ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.card-name{font-size:14px;font-weight:600}
-.card-meta{font-size:11px;color:#888;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.age-badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:8px}
-.age-today{background:#dcfce7;color:#166534}
-.age-week{background:#dbeafe;color:#1e40af}
-.age-old{background:#f3f4f6;color:#6b7280}
-.badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}
-.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:9px}
-.b-hot{background:#fce4e1;color:#922b21}
-.b-warm{background:#fef5e7;color:#7d6608}
-.b-cold{background:#eafaf1;color:#1e5631}
-.b-kw{background:#f3e8ff;color:#6b21a8}
-.title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:6px}
-.text{font-size:13px;color:#555;line-height:1.6;background:#f8f7f4;border-left:2px solid #ddd;padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:8px}
-.analysis{font-size:12px;color:#444;background:#f0f0ee;border-radius:7px;padding:8px 12px;line-height:1.5}
-.analysis b{color:#1a1a1a}
-.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-.src-link{font-size:12px;color:#2563eb;text-decoration:none}
-.src-link:hover{text-decoration:underline}
-.loading{text-align:center;padding:60px;color:#888}
-.spinner{width:32px;height:32px;border:2px solid #eee;border-top-color:#1a1a1a;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.empty{text-align:center;padding:60px;color:#bbb;font-size:14px}
-.group-title{font-size:13px;font-weight:700;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
-.count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
-.new-count{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
-.error-bar{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:13px;color:#991b1b;display:none}
+body{font-family:'Bricolage Grotesque',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+.mono{font-family:'IBM Plex Mono',monospace}
+.topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:100}
+.tb-live{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);background:var(--green-l);border:1px solid var(--green-b);padding:3px 8px;border-radius:20px;font-weight:500}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.tb-title{font-size:13px;font-weight:500;color:var(--text)}
+.tb-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.tb-time{font-size:11px;color:var(--text3)}
+.btn-refresh{height:30px;padding:0 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Bricolage Grotesque',sans-serif}
+.btn-refresh:hover{background:var(--bg3)}
+.spin{display:inline-block}
+.btn-refresh.spinning .spin{animation:rotate .7s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.pipeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--border);background:var(--bg2)}
+.pc{padding:16px 24px;border-right:1px solid var(--border)}
+.pc:last-child{border-right:none}
+.pc-l{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;margin-bottom:4px}
+.pc-n{font-size:30px;font-weight:600;line-height:1;margin-bottom:6px}
+.pc-bar{height:2px;background:var(--bg3);border-radius:1px;overflow:hidden;margin-bottom:5px}
+.pc-fill{height:100%;border-radius:1px;transition:width .8s ease}
+.pc-s{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
+.pc.total .pc-n{color:var(--text)}.pc.total .pc-fill{background:#888}
+.pc.hot .pc-n{color:var(--red)}.pc.hot .pc-fill{background:var(--red)}
+.pc.warm .pc-n{color:var(--amber)}.pc.warm .pc-fill{background:#e67e22}
+.pc.msg .pc-n{color:var(--green)}.pc.msg .pc-fill{background:var(--green)}
+.toolbar{display:flex;align-items:center;gap:6px;padding:10px 24px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.fbtn{height:30px;padding:0 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Bricolage Grotesque',sans-serif;transition:all .12s}
+.fbtn:hover{background:var(--bg3)}
+.fbtn.active-all{background:var(--text);color:#fff;border-color:var(--text)}
+.fbtn.active-hot{background:var(--red-l);border-color:var(--red);color:var(--red);font-weight:500}
+.fbtn.active-warm{background:var(--amber-l);border-color:var(--amber);color:var(--amber);font-weight:500}
+.fbtn.active-cold{background:var(--green-l);border-color:var(--green);color:var(--green);font-weight:500}
+.fbtn-cnt{font-size:10px;font-weight:600;padding:1px 5px;border-radius:8px;background:rgba(0,0,0,0.08)}
+.sort-sel{margin-left:auto;height:30px;padding:0 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:12px;cursor:pointer;outline:none;font-family:'Bricolage Grotesque',sans-serif}
+.feed{padding:20px 24px;display:flex;flex-direction:column;gap:8px;max-width:960px;margin:0 auto}
+.grp-header{display:flex;align-items:center;gap:8px;padding:8px 0 4px;font-size:10px;font-family:'IBM Plex Mono',monospace;font-weight:500;letter-spacing:.12em}
+.grp-header.hot{color:var(--red)}.grp-header.warm{color:var(--amber)}.grp-header.cold{color:var(--green)}
+.grp-line{flex:1;height:1px;background:var(--border)}
+.grp-cnt{font-size:10px;padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-weight:500}
+.hot .grp-cnt{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+.warm .grp-cnt{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+.cold .grp-cnt{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
+.new-pill{font-size:10px;padding:1px 6px;border-radius:10px;background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);font-family:'IBM Plex Mono',monospace}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);display:flex;overflow:hidden;transition:border-color .15s}
+.card:hover{border-color:var(--border2)}.card.is-new{border-color:rgba(183,119,13,0.3)}
+.card-score{width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid var(--border);flex-shrink:0;gap:4px}
+.score-n{font-size:22px;font-weight:600;line-height:1;font-family:'IBM Plex Mono',monospace}
+.score-l{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;text-align:center;letter-spacing:.05em}
+.score-line{width:24px;height:2px;border-radius:1px;margin-top:4px}
+.hot-c .score-n{color:var(--red)}.hot-c .score-line{background:var(--red)}
+.warm-c .score-n{color:var(--amber)}.warm-c .score-line{background:#e67e22}
+.card-body{flex:1;padding:14px 16px;min-width:0}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.card-who{display:flex;align-items:center;gap:8px}
+.ava{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.ava-r{background:#fce4e1;color:var(--red)}.ava-a{background:var(--amber-l);color:var(--amber)}
+.ava-b{background:#e6f1fb;color:#185fa5}.ava-p{background:var(--purple-l);color:var(--purple)}.ava-g{background:var(--green-l);color:var(--green)}
+.card-name{font-size:13px;font-weight:500}
+.card-meta{font-size:11px;color:var(--text3);margin-top:1px;font-family:'IBM Plex Mono',monospace}
+.card-badges{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+.badge-hot{background:var(--red-l);color:var(--red)}.badge-warm{background:var(--amber-l);color:var(--amber)}.badge-cold{background:var(--green-l);color:var(--green)}
+.badge-new{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+.badge-src{font-size:10px;padding:2px 7px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-weight:400;background:var(--bg3);color:var(--text2)}
+.badge-tp{background:var(--green-l);color:var(--green)}.badge-yt{background:#fce4e1;color:var(--red)}
+.card-title{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.4}
+.card-text{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px}
+.signal-box{border:1px solid var(--purple-b);background:var(--purple-l);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.signal-head{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.signal-dot{width:5px;height:5px;border-radius:50%;background:var(--purple)}
+.signal-lbl{font-size:10px;font-weight:500;color:var(--purple);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
+.signal-val{margin-left:auto;font-size:12px;font-weight:600;font-family:'IBM Plex Mono',monospace}
+.signal-val.hot{color:var(--red)}.signal-val.warm{color:var(--amber)}
+.signal-bar{height:2px;background:rgba(83,74,183,0.15);border-radius:1px;overflow:hidden;margin-bottom:5px}
+.signal-fill{height:100%;border-radius:1px;background:var(--purple)}
+.signal-txt{font-size:12px;color:#3c3489;line-height:1.5}
+.msg-box{border:1px solid var(--border2);background:var(--bg3);border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.msg-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.msg-dot{width:5px;height:5px;border-radius:50%;background:var(--text3)}
+.msg-lbl{font-size:10px;font-weight:500;color:var(--text2);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
+.msg-regen{margin-left:auto;font-size:10px;padding:2px 8px;border:1px solid var(--border2);border-radius:4px;background:var(--bg2);color:var(--text2);cursor:pointer;font-family:'Bricolage Grotesque',sans-serif}
+.msg-regen:hover{background:var(--border)}
+.msg-txt{font-size:12px;color:var(--text2);line-height:1.6;font-style:italic}
+.card-actions{display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--border)}
+.btn-send{height:30px;padding:0 16px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;transition:background .12s}
+.btn-send:hover{background:#922b21}.btn-send.warm{background:#e67e22}.btn-send.warm:hover{background:#b7770d}
+.btn-copy,.btn-archive{height:30px;padding:0 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;color:var(--text)}
+.btn-copy:hover,.btn-archive:hover{background:var(--bg3)}
+.card-link{margin-left:auto;font-size:11px;color:#2563eb;text-decoration:none;font-family:'IBM Plex Mono',monospace;white-space:nowrap}
+.card-link:hover{text-decoration:underline}
+.loading{text-align:center;padding:60px;color:var(--text3)}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--text2);border-radius:50%;animation:rotate .7s linear infinite;margin:0 auto 12px}
+.empty{text-align:center;padding:60px;color:var(--text3);font-size:13px}
+.error-bar{background:#fce4e1;border:1px solid var(--red-b);border-radius:6px;padding:8px 14px;margin-bottom:12px;font-size:12px;color:var(--red);display:none}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+.status-dot.loading{background:#e67e22;animation:blink .5s infinite}.status-dot.error{background:var(--red);animation:none}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div><h1><span class="dot" id="statusDot"></span>Veille Reconversion Pro — Bilan de compétences CPF</h1></div>
-  <div class="topbar-right">
-    <span id="autoRefreshInfo">⏱ Actu. auto dans <b id="nextRefresh">30</b> min</span>
-    <span id="lastUpdate" style="font-size:11px;color:#aaa">Jamais mis à jour</span>
+  <span id="statusDot" class="status-dot"></span>
+  <span class="tb-live"><span class="live-dot"></span>Live</span>
+  <span class="tb-title">Pipeline prospects — Bilan de compétences CPF</span>
+  <div class="tb-r">
+    <span class="tb-time" id="lastUpdate">Jamais mis à jour</span>
+    <span class="tb-time mono" id="autoRefreshInfo">· actu. dans <b id="nextRefresh">30</b> min</span>
+    <button class="btn-refresh" onclick="loadData(true)" id="refreshBtn"><span class="spin">↻</span> Actualiser</button>
   </div>
 </div>
-<div class="container">
-  <div id="errorBar" class="error-bar">⚠️ Erreur de connexion — Render se réveille, réessai dans quelques secondes...</div>
-  <div class="stats">
-    <div class="stat"><div class="stat-n" id="sTotal">—</div><div class="stat-l">Posts analysés</div></div>
-    <div class="stat"><div class="stat-n" id="sHot" style="color:#c0392b">—</div><div class="stat-l">Prospects chauds</div><div class="stat-new" id="sHotNew" style="display:none"></div></div>
-    <div class="stat"><div class="stat-n" id="sWarm" style="color:#e67e22">—</div><div class="stat-l">Prospects tièdes</div><div class="stat-new" id="sWarmNew" style="display:none"></div></div>
-    <div class="stat"><div class="stat-n" id="sCold" style="color:#27ae60">—</div><div class="stat-l">Veille froide</div></div>
-  </div>
-  <div class="toolbar">
-    <button class="filter-btn active-all" onclick="setFilter('all')" id="f-all">Tous</button>
-    <button class="filter-btn" onclick="setFilter('hot')" id="f-hot">🔴 Chauds</button>
-    <button class="filter-btn" onclick="setFilter('warm')" id="f-warm">🟡 Tièdes</button>
-    <button class="filter-btn" onclick="setFilter('cold')" id="f-cold">🟢 Froid</button>
-    <select class="sort-select" id="sortSelect" onchange="renderPosts()">
-      <option value="date">🕐 Plus récents d'abord</option>
-      <option value="heat">🔥 Par chaleur</option>
-      <option value="score">⬆️ Par score Reddit</option>
-    </select>
-    <button class="refresh-btn" onclick="loadData(true)" id="refreshBtn"><span class="spin-icon">↻</span> Actualiser</button>
-  </div>
-  <div id="results"><div class="loading"><div class="spinner"></div>Récupération des posts Reddit...</div></div>
+<div class="pipeline">
+  <div class="pc total"><div class="pc-l">SIGNAUX DÉTECTÉS</div><div class="pc-n" id="sTotal">—</div><div class="pc-bar"><div class="pc-fill" id="barTotal" style="width:100%"></div></div><div class="pc-s">3 sources actives</div></div>
+  <div class="pc hot"><div class="pc-l">PROSPECTS QUALIFIÉS</div><div class="pc-n" id="sHot">—</div><div class="pc-bar"><div class="pc-fill" id="barHot" style="width:0%"></div></div><div class="pc-s" id="sHotSub">score IA ≥ 80</div></div>
+  <div class="pc warm"><div class="pc-l">PRÊTS À CLOSER</div><div class="pc-n" id="sWarm">—</div><div class="pc-bar"><div class="pc-fill" id="barWarm" style="width:0%"></div></div><div class="pc-s" id="sWarmSub">en réflexion</div></div>
+  <div class="pc msg"><div class="pc-l">MESSAGE GÉNÉRÉ</div><div class="pc-n" id="sCold">—</div><div class="pc-bar"><div class="pc-fill" id="barCold" style="width:0%"></div></div><div class="pc-s">veille froide</div></div>
 </div>
-
+<div class="toolbar">
+  <button class="fbtn active-all" onclick="setFilter('all')" id="f-all">Tous</button>
+  <button class="fbtn" onclick="setFilter('hot')" id="f-hot">Prêts à closer <span class="fbtn-cnt" id="cnt-hot">—</span></button>
+  <button class="fbtn" onclick="setFilter('warm')" id="f-warm">Tièdes <span class="fbtn-cnt" id="cnt-warm">—</span></button>
+  <button class="fbtn" onclick="setFilter('cold')" id="f-cold">Veille</button>
+  <select class="sort-sel" id="sortSelect" onchange="renderPosts()"><option value="date">Plus récents</option><option value="heat">Par chaleur</option><option value="score">Par score Reddit</option></select>
+</div>
+<div class="feed">
+  <div id="errorBar" class="error-bar">⚠️ Erreur de connexion — réessai dans quelques secondes...</div>
+  <div id="results"><div class="loading"><div class="spinner"></div>Récupération des signaux...</div></div>
+</div>
 <script>
-let allPosts = [];
-let currentFilter = 'all';
-let refreshTimer = null;
-let countdownTimer = null;
-let minutesLeft = 30;
-
-const AVA_COLORS = [
-  ['#fdebd0','#935116'],['#eaf0fb','#154360'],['#e8f0e8','#2a5e2d'],
-  ['#fce4e1','#922b21'],['#fef9e7','#7d6608'],['#f4ecf7','#6c3483'],
-  ['#d5f5e3','#1e5631'],['#fde8d8','#7b241c']
-];
-
-function avaStyle(name) {
-  const c = AVA_COLORS[(name||'A').charCodeAt(0) % AVA_COLORS.length];
-  return 'background:'+c[0]+';color:'+c[1];
-}
-
-function getAge(ts) {
-  if (!ts) return {label:'?', cls:'age-old', isNew:false};
-  const diff = (Date.now() / 1000) - ts;
-  const hours = diff / 3600;
-  const days = diff / 86400;
-  if (hours < 24) return {label:"Aujourd'hui", cls:'age-today', isNew:true};
-  if (days < 2) return {label:'Hier', cls:'age-today', isNew:true};
-  if (days < 7) return {label:'Il y a '+Math.floor(days)+'j', cls:'age-week', isNew:false};
-  if (days < 30) return {label:'Il y a '+Math.floor(days/7)+'sem', cls:'age-old', isNew:false};
-  return {label:'Il y a '+Math.floor(days/30)+'mois', cls:'age-old', isNew:false};
-}
-
-function qualifyHeat(post) {
-  const txt = (post.title + ' ' + post.text).toLowerCase();
-  const kw = post.keyword || '';
-  if (txt.includes('bilan de comp') || txt.includes('cpf') || txt.includes('financer ma formation') || kw.includes('bilan')) return 'hot';
-  if (txt.includes('burn') || txt.includes('reconversion') || txt.includes('changer de m') || txt.includes('plus de sens') || txt.includes('rupture conventionnelle') || txt.includes("j'aime pas") || txt.includes('desespere') || txt.includes('degoute') || txt.includes('plus de motivation') || txt.includes('souffrance')) return 'warm';
-  return 'cold';
-}
-
-function setFilter(f) {
-  currentFilter = f;
-  ['all','hot','warm','cold'].forEach(x => {
-    document.getElementById('f-'+x).className = 'filter-btn' + (x === f ? ' active-'+f : '');
-  });
-  renderPosts();
-}
-
-function getAnalysis(p) {
-  const txt = (p.title + ' ' + p.text).toLowerCase();
-  if (p.heat === 'hot') return 'A déjà entamé une démarche concrète (bilan, CPF, formation) — prospect à contacter en priorité.';
-  if (txt.includes('burn')) return 'Burn-out mentionné — personne en souffrance active, très réceptive à un accompagnement bilan de compétences.';
-  if (txt.includes('reconversion')) return 'En réflexion active sur sa reconversion — moment idéal pour présenter le bilan de compétences CPF.';
-  if (txt.includes('changer')) return "Envie de changer exprimée — signal d'intention, à suivre et recontacter.";
-  if (txt.includes('desespere') || txt.includes('degoute')) return 'Personne en détresse professionnelle — approche douce recommandée, proposer un premier échange gratuit.';
-  return 'Signal faible — à surveiller pour détecter une évolution vers une intention plus forte.';
-}
-
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function sortPosts(posts) {
-  const mode = document.getElementById('sortSelect').value;
-  const sorted = [...posts];
-  if (mode === 'date') {
-    sorted.sort((a,b) => (b.date||0) - (a.date||0));
-  } else if (mode === 'heat') {
-    const rank = {hot:0, warm:1, cold:2};
-    sorted.sort((a,b) => rank[a.heat] - rank[b.heat] || (b.date||0) - (a.date||0));
-  } else if (mode === 'score') {
-    sorted.sort((a,b) => (b.score||0) - (a.score||0));
-  }
-  return sorted;
-}
-
-function renderPosts() {
-  const filtered = currentFilter === 'all' ? allPosts : allPosts.filter(p => p.heat === currentFilter);
-  const sorted = sortPosts(filtered);
-  const box = document.getElementById('results');
-  if (!sorted.length) {
-    box.innerHTML = '<div class="empty">Aucun résultat pour ce filtre</div>';
-    return;
-  }
-  const groups = {hot:[], warm:[], cold:[]};
-  sorted.forEach(p => groups[p.heat].push(p));
-  const labels = {hot:'🔴 Prospects chauds', warm:'🟡 Tièdes — signal reconversion', cold:'🟢 Veille froide'};
-  const bc = {hot:'b-hot', warm:'b-warm', cold:'b-cold'};
-  const cc = {hot:'#fce4e1', warm:'#fef5e7', cold:'#eafaf1'};
-  const tc = {hot:'#922b21', warm:'#7d6608', cold:'#1e5631'};
-  let html = '';
-  ['hot','warm','cold'].forEach(h => {
-    if (!groups[h].length) return;
-    const newCount = groups[h].filter(p => getAge(p.date).isNew).length;
-    html += '<div class="group-title">'+labels[h]+
-      '<span class="count" style="background:'+cc[h]+';color:'+tc[h]+'">'+groups[h].length+'</span>'+
-      (newCount ? '<span class="new-count">'+newCount+' nouveau'+(newCount>1?'x':'')+'</span>' : '')+
-      '</div>';
-    html += '<div class="cards">';
-    groups[h].forEach(p => {
-      const initials = (p.author||'?').substring(0,2).toUpperCase();
-      const age = getAge(p.date);
-      html += '<div class="card '+h+(age.isNew?' is-new':'')+'">' +
-        '<div class="card-top">' +
-          '<div class="card-left">' +
-            '<div class="ava" style="'+avaStyle(p.author)+'">'+initials+'</div>' +
-            '<div>' +
-              '<div class="card-name">u/'+esc(p.author)+'</div>' +
-              '<div class="card-meta">' +
-                '<span class="age-badge '+age.cls+'">'+age.label+'</span>' +
-                '<span>📌 r/'+esc(p.subreddit)+'</span>' +
-                '<span>⬆️ '+p.score+'</span>' +
-                '<span>💬 '+p.comments+'</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="badges">' +
-            (age.isNew ? '<span class="badge-new">✨ NOUVEAU</span>' : '') +
-            '<span class="badge b-kw">'+esc(p.keyword)+'</span>' +
-            '<span class="badge '+bc[h]+'">'+(h==='hot'?'CHAUD':h==='warm'?'TIÈDE':'FROID')+'</span>' +
-          '</div>' +
-        '</div>' +
-        '<div class="title">'+esc(p.title)+'</div>' +
-        '<div class="text">'+esc(p.text.substring(0,300))+'...</div>' +
-        '<div class="analysis"><b>Analyse :</b> '+getAnalysis(p)+'</div>' +
-        '<div class="card-foot">' +
-          '<a class="src-link" href="'+p.url+'" target="_blank">Voir le post Reddit →</a>' +
-        '</div>' +
-      '</div>';
-    });
-    html += '</div>';
-  });
-  box.innerHTML = html;
-}
-
-function updateStats() {
-  const hot = allPosts.filter(p=>p.heat==='hot');
-  const warm = allPosts.filter(p=>p.heat==='warm');
-  document.getElementById('sTotal').textContent = allPosts.length;
-  document.getElementById('sHot').textContent = hot.length;
-  document.getElementById('sWarm').textContent = warm.length;
-  document.getElementById('sCold').textContent = allPosts.filter(p=>p.heat==='cold').length;
-  const hotNew = hot.filter(p=>getAge(p.date).isNew).length;
-  const warmNew = warm.filter(p=>getAge(p.date).isNew).length;
-  const hotNewEl = document.getElementById('sHotNew');
-  const warmNewEl = document.getElementById('sWarmNew');
-  if (hotNew > 0) { hotNewEl.style.display=''; hotNewEl.textContent = hotNew+' nouveau'+(hotNew>1?'x':''); }
-  else hotNewEl.style.display='none';
-  if (warmNew > 0) { warmNewEl.style.display=''; warmNewEl.textContent = warmNew+' nouveau'+(warmNew>1?'x':''); }
-  else warmNewEl.style.display='none';
-}
-
-function startCountdown() {
-  clearInterval(countdownTimer);
-  minutesLeft = 30;
-  document.getElementById('nextRefresh').textContent = minutesLeft;
-  countdownTimer = setInterval(() => {
-    minutesLeft--;
-    if (minutesLeft <= 0) minutesLeft = 30;
-    document.getElementById('nextRefresh').textContent = minutesLeft;
-  }, 60000);
-}
-
-async function loadData(manual=false) {
-  const dot = document.getElementById('statusDot');
-  const btn = document.getElementById('refreshBtn');
-  const errorBar = document.getElementById('errorBar');
-  dot.className = 'dot loading';
-  btn.classList.add('spinning');
-  if (manual) {
-    document.getElementById('results').innerHTML = '<div class="loading"><div class="spinner"></div>Récupération des posts Reddit...</div>';
-  }
-  try {
-    const r = await fetch('/search');
-    if (!r.ok) throw new Error('Erreur serveur');
-    const data = await r.json();
-    errorBar.style.display = 'none';
-    dot.className = 'dot';
-    const seen = new Set();
-    allPosts = data.posts
-      .filter(p => { if(seen.has(p.id)){return false;} seen.add(p.id); return true; })
-      .map(p => ({...p, heat: qualifyHeat(p)}));
-    updateStats();
-    renderPosts();
-    document.getElementById('lastUpdate').textContent = 'Mis à jour à ' + new Date().toLocaleTimeString('fr-FR');
-    startCountdown();
-  } catch(e) {
-    dot.className = 'dot error';
-    errorBar.style.display = 'block';
-    if (manual) document.getElementById('results').innerHTML = '<div class="empty">Erreur de connexion — réessaie dans quelques secondes</div>';
-  }
-  btn.classList.remove('spinning');
-}
-
-// Auto-refresh toutes les 30 min
-function scheduleAutoRefresh() {
-  clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(() => {
-    loadData(false);
-    scheduleAutoRefresh();
-  }, 30 * 60 * 1000);
-}
-
-loadData(true);
-scheduleAutoRefresh();
-startCountdown();
+let allPosts=[],currentFilter='all',refreshTimer=null,countdownTimer=null,minutesLeft=30;
+const AVA=['ava-r','ava-a','ava-b','ava-p','ava-g'];
+function avaClass(n){return AVA[(n||'A').charCodeAt(0)%AVA.length];}
+function getAge(ts){if(!ts)return{label:'?',isNew:false};const diff=(Date.now()/1000)-ts,h=diff/3600,d=diff/86400;if(h<24)return{label:"aujourd'hui",isNew:true};if(d<2)return{label:'hier',isNew:true};if(d<7)return{label:'il y a '+Math.floor(d)+'j',isNew:false};if(d<30)return{label:'il y a '+Math.floor(d/7)+'sem',isNew:false};return{label:'il y a '+Math.floor(d/30)+'mois',isNew:false};}
+function qualifyHeat(p){const t=(p.title+' '+p.text).toLowerCase(),kw=p.keyword||'';if(t.includes('bilan de comp')||t.includes('cpf')||kw.includes('bilan')||t.includes('financer ma formation'))return'hot';if(t.includes('burn')||t.includes('reconversion')||t.includes('changer de m')||t.includes('souffrance')||t.includes('rupture conventionnelle')||t.includes('plus de sens')||t.includes('demission')||t.includes('degoute')||t.includes('desespere'))return'warm';return'cold';}
+function getScore(p){const t=(p.title+' '+p.text).toLowerCase();let s=30;if(t.includes('bilan de comp'))s+=35;if(t.includes('cpf'))s+=25;if(t.includes('financer'))s+=20;if(t.includes('reconversion'))s+=15;if(t.includes('burn'))s+=12;if(t.includes('souffrance'))s+=10;if(p.source==='Trustpilot')s+=15;if(p.score>10)s+=5;if(p.comments>5)s+=3;const age=(Date.now()/1000-(p.date||0))/86400;if(age<1)s+=8;else if(age<3)s+=4;return Math.min(s,99);}
+function getMessage(p){const t=(p.title+' '+p.text).toLowerCase(),name=(p.author||'').replace('u/','').replace('@',''),hi=name?'Bonjour '+name+',':'Bonjour,';if(p.source==='Trustpilot')return hi+" j'ai vu votre avis suite à votre bilan. Si vous cherchez un accompagnement plus sérieux et personnalisé, je serais ravi d'en discuter 15 min — c'est gratuit et sans engagement.";if(t.includes('bilan de comp'))return hi+" j'ai vu votre post sur votre reconversion après votre bilan. C'est exactement le bon moment pour utiliser votre CPF restant — je serais ravi d'en discuter 15 min avec vous si vous êtes intéressé(e).";if(t.includes('burn'))return hi+" ce que vous traversez est difficile mais vous n'êtes pas seul(e). Un bilan de compétences peut être une belle première étape pour reprendre confiance et trouver un cap. C'est financé CPF, sans engagement. Ça vous intéresse ?";if(t.includes('reconversion'))return hi+" j'ai vu votre situation. Le bilan de compétences CPF peut vous aider à identifier exactement où aller. C'est 100% financé. Envie qu'on en parle ?";return hi+" votre message m'a interpellé. Si vous êtes en réflexion sur votre carrière, le bilan de compétences CPF pourrait vous aider — c'est gratuit et sans engagement.";}
+function getAnalysis(p){const t=(p.title+' '+p.text).toLowerCase();if(p.source==='Trustpilot')return"Déçu d'un concurrent, cherche activement un meilleur organisme. Contact prioritaire.";if(t.includes('bilan de comp'))return"Bilan CPF terminé, phase de transition active. Cherche une formation concrète. Financement CPF disponible. Fenêtre d'opportunité : maintenant.";if(t.includes('burn'))return"Burn-out actif + signal reconversion. Très réceptif mais fragile. Approche bienveillante requise. Fort potentiel à 30 jours.";if(t.includes('reconversion'))return"En réflexion active sur sa reconversion. Moment idéal pour présenter le bilan CPF comme outil de clarification.";if(t.includes('rupture'))return"Rupture conventionnelle ou licenciement. Personne disponible et motivée à rebondir. Financement Transition Pro possible.";return"Signal faible à surveiller. Relancer si le signal se renforce.";}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function srcBadge(s){if(s==='YouTube')return '<span class="badge badge-src badge-yt">YouTube</span>';if(s==='Trustpilot')return '<span class="badge badge-src badge-tp">Trustpilot</span>';return '<span class="badge badge-src">Reddit</span>';}
+function sortPosts(posts){const mode=document.getElementById('sortSelect').value;return[...posts].sort((a,b)=>{if(mode==='date')return(b.date||0)-(a.date||0);if(mode==='heat'){const r={hot:0,warm:1,cold:2};return r[a.heat]-r[b.heat]||(b.date||0)-(a.date||0);}return(b.score||0)-(a.score||0);});}
+function setFilter(f){currentFilter=f;['all','hot','warm','cold'].forEach(x=>{document.getElementById('f-'+x).className='fbtn'+(x===f?' active-'+f:'');});renderPosts();}
+function renderPosts(){const filtered=currentFilter==='all'?allPosts:allPosts.filter(p=>p.heat===currentFilter);const sorted=sortPosts(filtered);const box=document.getElementById('results');if(!sorted.length){box.innerHTML='<div class="empty">Aucun résultat pour ce filtre</div>';return;}const groups={hot:[],warm:[],cold:[]};sorted.forEach(p=>groups[p.heat].push(p));const labels={hot:'PRÊTS À CLOSER',warm:'TIÈDES — À RELANCER',cold:'VEILLE FROIDE'};let html='';['hot','warm','cold'].forEach(h=>{if(!groups[h].length)return;const newCnt=groups[h].filter(p=>getAge(p.date).isNew).length;html+=`<div class="grp-header ${h}">${labels[h]}<div class="grp-line"></div><span class="grp-cnt">${groups[h].length}</span>${newCnt?`<span class="new-pill">${newCnt} nouveau${newCnt>1?'x':''}</span>`:''}</div>`;groups[h].forEach(p=>{const age=getAge(p.date),score=p.iaScore||getScore(p),msg=getMessage(p),analysis=getAnalysis(p),initials=(p.author||'?').substring(0,2).toUpperCase(),isBtnWarm=h==='warm';html+=`<div class="card${age.isNew?' is-new':''}"><div class="card-score ${h}-c"><div class="score-n">${score}</div><div class="score-l">score IA</div><div class="score-line"></div></div><div class="card-body"><div class="card-top"><div class="card-who"><div class="ava ${avaClass(p.author)}">${initials}</div><div><div class="card-name">${esc(p.author)}</div><div class="card-meta">${age.label} · ${esc(p.subreddit)} · ${esc(p.source||'Reddit')}</div></div></div><div class="card-badges">${age.isNew?'<span class="badge badge-new">+ nouveau</span>':''}${srcBadge(p.source)}<span class="badge badge-${h}">${h==='hot'?'PRÊT À CLOSER':h==='warm'?'TIÈDE':'VEILLE'}</span></div></div><div class="card-title">${esc(p.title)}</div><div class="card-text">${esc(p.text.substring(0,200))}${p.text.length>200?'...':''}</div><div class="signal-box"><div class="signal-head"><div class="signal-dot"></div><span class="signal-lbl">SIGNAL IA</span><span class="signal-val ${h==='hot'?'hot':'warm'}">${score} / 100</span></div><div class="signal-bar"><div class="signal-fill" style="width:${score}%"></div></div><div class="signal-txt">${analysis}</div></div><div class="msg-box"><div class="msg-head"><div class="msg-dot"></div><span class="msg-lbl">MESSAGE GÉNÉRÉ PAR IA</span><button class="msg-regen">↻ regénérer</button></div><div class="msg-txt">"${esc(msg)}"</div></div><div class="card-actions"><button class="btn-send${isBtnWarm?' warm':''}" onclick="this.textContent='✓ Envoyé'">Envoyer le message</button><button class="btn-copy" onclick="navigator.clipboard.writeText(${JSON.stringify(msg)});this.textContent='✓ Copié';setTimeout(()=>this.textContent='Copier',2000)">Copier</button><button class="btn-archive" onclick="this.closest('.card').style.opacity='.3'">Archiver</button><a class="card-link" href="${p.url}" target="_blank">Voir le post →</a></div></div></div>`;});});box.innerHTML=html;}
+function updateStats(){const hot=allPosts.filter(p=>p.heat==='hot'),warm=allPosts.filter(p=>p.heat==='warm'),cold=allPosts.filter(p=>p.heat==='cold'),total=allPosts.length;document.getElementById('sTotal').textContent=total;document.getElementById('sHot').textContent=hot.length;document.getElementById('sWarm').textContent=warm.length;document.getElementById('sCold').textContent=cold.length;document.getElementById('cnt-hot').textContent=hot.length;document.getElementById('cnt-warm').textContent=warm.length;if(total>0){document.getElementById('barHot').style.width=Math.round(hot.length/total*100)+'%';document.getElementById('barWarm').style.width=Math.round(warm.length/total*100)+'%';document.getElementById('barCold').style.width=Math.round(cold.length/total*100)+'%';}const newHot=hot.filter(p=>getAge(p.date).isNew).length;document.getElementById('sHotSub').textContent=newHot>0?newHot+' nouveau'+(newHot>1?'x':''):'score IA ≥ 80';}
+function startCountdown(){clearInterval(countdownTimer);minutesLeft=30;document.getElementById('nextRefresh').textContent=minutesLeft;countdownTimer=setInterval(()=>{minutesLeft--;if(minutesLeft<=0)minutesLeft=30;document.getElementById('nextRefresh').textContent=minutesLeft;},60000);}
+async function loadData(manual=false){const dot=document.getElementById('statusDot'),btn=document.getElementById('refreshBtn'),errBar=document.getElementById('errorBar');dot.className='status-dot loading';btn.classList.add('spinning');if(manual)document.getElementById('results').innerHTML='<div class="loading"><div class="spinner"></div>Récupération des signaux...</div>';try{const r=await fetch('/search');if(!r.ok)throw new Error('erreur');const data=await r.json();errBar.style.display='none';dot.className='status-dot';const seen=new Set();allPosts=data.posts.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;}).map(p=>({...p,heat:qualifyHeat(p),iaScore:getScore(p)}));updateStats();renderPosts();document.getElementById('lastUpdate').textContent='Mis à jour '+new Date().toLocaleTimeString('fr-FR');startCountdown();}catch(e){dot.className='status-dot error';errBar.style.display='block';if(manual)document.getElementById('results').innerHTML='<div class="empty">Erreur de connexion — réessaie dans quelques secondes</div>';}btn.classList.remove('spinning');}
+function scheduleAutoRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{loadData(false);scheduleAutoRefresh();},30*60*1000);}
+loadData(true);scheduleAutoRefresh();startCountdown();
 </script>
 </body>
 </html>
