@@ -189,45 +189,26 @@ function score(p){
 
 function why(p){
   const t=(p.title+' '+p.text).toLowerCase();
-  if(p.source==='Trustpilot')return'A déjà fait un bilan chez un concurrent et en est déçu. Cherche activement un meilleur organisme. Signal le plus fort possible : la décision est prise, il manque juste le bon interlocuteur.';
-  if(t.includes('bilan de comp')&&t.includes('cpf'))return'Mentionne explicitement le bilan de compétences et le CPF. Déjà dans la démarche, probablement en train de comparer les organismes. Contacter maintenant.';
-  if(t.includes('bilan de comp'))return'A terminé ou envisage un bilan de compétences. En phase de décision active. Le timing est parfait pour proposer un accompagnement.';
-  if(t.includes('burn'))return'En sortie de burn-out, cherche à se reconstruire professionnellement. Très réceptif à un accompagnement bienveillant. Approche douce recommandée — proposer un premier échange sans engagement.';
-  if(t.includes('reconversion'))return'Réflexion active sur une reconversion. Cherche de la clarté sur son projet. Le bilan CPF est exactement l'outil dont il a besoin — mais il ne le sait peut-être pas encore.';
-  if(t.includes('rupture')||t.includes('licenci'))return'Rupture conventionnelle ou licenciement. Personne disponible et motivée à rebondir. Fenêtre d'opportunité courte — à contacter rapidement.';
-  return'Signal de souffrance professionnelle. Peut évoluer vers une demande de reconversion. À suivre de près.';
+  if(p.source==='Trustpilot')return"A déjà fait un bilan chez un concurrent et en est déçu. Cherche activement un meilleur organisme. Signal le plus fort possible : la décision est prise, il manque juste le bon interlocuteur.";
+  if(t.includes('bilan de comp')&&t.includes('cpf'))return"Mentionne explicitement le bilan et le CPF. Déjà dans la démarche, en train de comparer les organismes. Contacter maintenant.";
+  if(t.includes('bilan de comp'))return"A terminé ou envisage un bilan. En phase de décision active. Le timing est parfait.";
+  if(t.includes('burn'))return"En sortie de burn-out, cherche à se reconstruire. Très réceptif à un accompagnement bienveillant. Approche douce recommandée.";
+  if(t.includes('reconversion'))return"Réflexion active sur une reconversion. Cherche de la clarté sur son projet. Le bilan CPF est exactement l'outil dont il a besoin.";
+  if(t.includes('rupture')||t.includes('licenci'))return"Rupture ou licenciement récent. Personne disponible et motivée à rebondir. Fenêtre d'opportunité courte.";
+  return"Signal de souffrance professionnelle. Peut évoluer vers une demande de reconversion. À suivre.";
 }
-
 function msg(p){
   const t=(p.title+' '+p.text).toLowerCase();
   const raw=p.author||'';
   const prenom=raw.startsWith('u/')?raw.slice(2).split('_')[0]:raw.startsWith('@')?raw.slice(1):raw.split(' ')[0];
   const P=prenom.charAt(0).toUpperCase()+prenom.slice(1).toLowerCase();
-
-  if(p.source==='Trustpilot'){
-    return'Bonjour '+P+', j'ai lu votre avis sur votre bilan et je comprends totalement votre déception — un parcours trop théorique, sans vraiment vous aider à clarifier votre direction, c'est frustrant. Ce que vous décrivez, c'est exactement ce qu'on cherche à éviter. Chez nous, chaque bilan est construit autour de vous : vos contraintes réelles, votre personnalité, ce qui vous donne de l'énergie. Si vous êtes encore en recherche d'un accompagnement sérieux, je serais heureux d'échanger avec vous 20 min — sans engagement, juste pour voir si ce qu'on fait correspond à ce que vous cherchez.';
-  }
-
-  if(t.includes('bilan de comp')&&t.includes('reconversion')&&t.includes('cpf')){
-    const metier=p.title.match(/reconversions+(w+)/i)?.[1]||'nouveau métier';
-    return'Bonjour '+P+', votre post sur votre reconversion m'a parlé. Vous venez de terminer votre bilan — vous êtes dans cette période un peu flottante où on a des pistes mais pas encore de cap solide. C'est exactement le moment où un accompagnement sur mesure peut faire la différence pour transformer ces pistes en projet concret. Vous avez encore du CPF disponible ? Si oui, on pourrait en parler ensemble rapidement.';
-  }
-
-  if(t.includes('bilan de comp')){
-    return'Bonjour '+P+', j'ai vu votre message. La question du bilan de compétences revient souvent à ce moment charnière — on sent qu'on a besoin de se repositionner mais on ne sait pas encore par où commencer. Ce que je vous propose : un échange de 20 min pour comprendre votre situation et voir si notre approche peut vraiment vous aider. C'est gratuit, sans pression, et ça vous donnera déjà des éléments concrets. Ça vous dit ?';
-  }
-
-  if(t.includes('burn')){
-    return'Bonjour '+P+', ce que vous partagez prend du courage. Un an et demi à reconstruire, c'est long — et la question "par où je repars professionnellement" est souvent la dernière qu'on ose se poser, alors qu'elle est pourtant essentielle. Un bilan de compétences peut être un espace pour faire le point sans pression, à votre rythme. C'est entièrement financé par votre CPF, donc aucun coût. Si jamais vous ressentez le besoin d'en parler, je suis disponible — aucune obligation.';
-  }
-
-  if(t.includes('reconversion')){
-    return'Bonjour '+P+', j'ai lu votre situation avec attention. Tourner en rond pendant 2 ans sur une reconversion, c'est épuisant — surtout quand on a envie de bouger mais qu'on ne sait pas vers quoi. Le bilan de compétences CPF est fait exactement pour ça : clarifier ce qui vous correspond vraiment, identifier des pistes concrètes, et construire un plan. Et c'est 100% financé, sans avancer un euro. Envie qu'on en parle ?';
-  }
-
-  return'Bonjour '+P+', votre message m'a interpellé. La situation que vous décrivez — ne plus se sentir à sa place, chercher un sens à ce qu'on fait — c'est souvent le signe qu'il est temps de prendre du recul. Un bilan de compétences peut vraiment aider à y voir plus clair, et c'est entièrement financé par votre CPF. Je serais heureux d'en discuter avec vous si ça vous intéresse.';
+  if(p.source==='Trustpilot')return"Bonjour "+P+", j'ai lu votre avis et je comprends totalement votre déception. Un parcours trop théorique, sans vraiment vous aider à clarifier votre direction, c'est frustrant. Ce que vous décrivez, c'est exactement ce qu'on cherche à éviter. Chez nous, chaque bilan est construit autour de vous : vos contraintes réelles, votre personnalité. Si vous cherchez encore un accompagnement sérieux, je serais heureux d'échanger 20 min avec vous — sans engagement.";
+  if(t.includes('bilan de comp')&&t.includes('cpf'))return"Bonjour "+P+", votre post m'a parlé. Vous venez de terminer votre bilan — vous êtes dans cette période un peu flottante où on a des pistes mais pas encore de cap solide. C'est exactement le moment où un accompagnement sur mesure peut faire la différence. Vous avez encore du CPF disponible ? Si oui, on pourrait en parler rapidement.";
+  if(t.includes('bilan de comp'))return"Bonjour "+P+", j'ai vu votre message. La question du bilan revient souvent à ce moment charnière. Ce que je vous propose : un échange de 20 min pour comprendre votre situation et voir si notre approche peut vraiment vous aider. C'est gratuit, sans pression.";
+  if(t.includes('burn'))return"Bonjour "+P+", ce que vous partagez prend du courage. Un an et demi à reconstruire, c'est long. Un bilan peut être un espace pour faire le point à votre rythme, sans pression. C'est entièrement financé par votre CPF. Si jamais vous ressentez le besoin d'en parler, je suis disponible.";
+  if(t.includes('reconversion'))return"Bonjour "+P+", j'ai lu votre situation. Tourner en rond sur une reconversion, c'est épuisant. Le bilan CPF est fait exactement pour ça : clarifier ce qui vous correspond, identifier des pistes concrètes. C'est 100% financé, sans avancer un euro. Envie qu'on en parle ?";
+  return"Bonjour "+P+", votre message m'a interpéllé. La situation que vous décrivez — ne plus se sentir à sa place — c'est souvent le signe qu'il est temps de prendre du recul. Un bilan CPF peut vraiment aider à y voir plus clair. Je serais heureux d'en discuter si ça vous intéresse.";
 }
-
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function srcTag(s){
   if(s==='YouTube')return'<span class="tag tag-src tag-yt">YouTube</span>';
