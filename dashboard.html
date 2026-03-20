@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Prospects â Bilan CPF</title>
+<title>Prospects — Bilan CPF</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -117,35 +117,35 @@ a:hover{text-decoration:underline}
 
 <div class="nav">
   <div class="nav-dot"></div>
-  <span class="nav-title">Prospects â Bilan CPF</span>
+  <span class="nav-title">Prospects — Bilan CPF</span>
   <div class="nav-sep"></div>
   <span class="nav-time" id="lastUpdate">Chargement...</span>
   <div class="nav-r">
     <span style="font-size:12px;color:#86868b">actu. dans <span id="nextRefresh">30</span> min</span>
-    <button class="nav-btn" onclick="loadData(true)" id="refreshBtn"><span class="spin">â»</span> Actualiser</button>
+    <button class="nav-btn" onclick="loadData(true)" id="refreshBtn"><span class="spin">↻</span> Actualiser</button>
   </div>
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-n n1" id="sTotal">â</div><div class="stat-l">signaux dÃ©tectÃ©s</div><div class="stat-bar"><div class="stat-fill f1" style="width:100%"></div></div></div>
-  <div class="stat"><div class="stat-n n2" id="sHot">â</div><div class="stat-l">Ã  contacter maintenant</div><div class="stat-bar"><div class="stat-fill f2" id="bHot" style="width:0%"></div></div></div>
-  <div class="stat"><div class="stat-n n3" id="sWarm">â</div><div class="stat-l">en rÃ©flexion</div><div class="stat-bar"><div class="stat-fill f3" id="bWarm" style="width:0%"></div></div></div>
-  <div class="stat"><div class="stat-n n4" id="sCold">â</div><div class="stat-l">Ã  surveiller</div><div class="stat-bar"><div class="stat-fill f4" id="bCold" style="width:0%"></div></div></div>
+  <div class="stat"><div class="stat-n n1" id="sTotal">—</div><div class="stat-l">signaux détectés</div><div class="stat-bar"><div class="stat-fill f1" style="width:100%"></div></div></div>
+  <div class="stat"><div class="stat-n n2" id="sHot">—</div><div class="stat-l">à contacter maintenant</div><div class="stat-bar"><div class="stat-fill f2" id="bHot" style="width:0%"></div></div></div>
+  <div class="stat"><div class="stat-n n3" id="sWarm">—</div><div class="stat-l">en réflexion</div><div class="stat-bar"><div class="stat-fill f3" id="bWarm" style="width:0%"></div></div></div>
+  <div class="stat"><div class="stat-n n4" id="sCold">—</div><div class="stat-l">à surveiller</div><div class="stat-bar"><div class="stat-fill f4" id="bCold" style="width:0%"></div></div></div>
 </div>
 
 <div class="toolbar">
   <button class="fbtn active-all" id="f-all" onclick="setFilter('all')">Tous</button>
-  <button class="fbtn" id="f-hot" onclick="setFilter('hot')">Ã contacter <span class="cnt" id="cnt-hot">â</span></button>
-  <button class="fbtn" id="f-warm" onclick="setFilter('warm')">En rÃ©flexion <span class="cnt" id="cnt-warm">â</span></button>
-  <button class="fbtn" id="f-cold" onclick="setFilter('cold')">Ã surveiller</button>
+  <button class="fbtn" id="f-hot" onclick="setFilter('hot')">À contacter <span class="cnt" id="cnt-hot">—</span></button>
+  <button class="fbtn" id="f-warm" onclick="setFilter('warm')">En réflexion <span class="cnt" id="cnt-warm">—</span></button>
+  <button class="fbtn" id="f-cold" onclick="setFilter('cold')">À surveiller</button>
   <select class="sort-sel" id="sortSel" onchange="renderPosts()">
-    <option value="date">Plus rÃ©cents</option>
+    <option value="date">Plus récents</option>
     <option value="heat">Par pertinence</option>
   </select>
 </div>
 
 <div class="feed">
-  <div id="errBar" class="err-bar">Render se rÃ©veille, chargement en cours...</div>
+  <div id="errBar" class="err-bar">Render se réveille, chargement en cours...</div>
   <div id="results"><div class="loading"><div class="spinner"></div>Analyse des signaux en cours...</div></div>
 </div>
 
@@ -189,25 +189,25 @@ function score(p){
 
 function why(p){
   const t=(p.title+' '+p.text).toLowerCase();
-  if(p.source==='Trustpilot')return"A dÃ©jÃ  fait un bilan chez un concurrent et en est dÃ©Ã§u. Cherche activement un meilleur organisme. Signal le plus fort possible : la dÃ©cision est prise, il manque juste le bon interlocuteur.";
-  if(t.includes('bilan de comp')&&t.includes('cpf'))return"Mentionne explicitement le bilan et le CPF. DÃ©jÃ  dans la dÃ©marche, en train de comparer les organismes. Contacter maintenant.";
-  if(t.includes('bilan de comp'))return"A terminÃ© ou envisage un bilan. En phase de dÃ©cision active. Le timing est parfait.";
-  if(t.includes('burn'))return"En sortie de burn-out, cherche Ã  se reconstruire. TrÃ¨s rÃ©ceptif Ã  un accompagnement bienveillant. Approche douce recommandÃ©e.";
-  if(t.includes('reconversion'))return"RÃ©flexion active sur une reconversion. Cherche de la clartÃ© sur son projet. Le bilan CPF est exactement l'outil dont il a besoin.";
-  if(t.includes('rupture')||t.includes('licenci'))return"Rupture ou licenciement rÃ©cent. Personne disponible et motivÃ©e Ã  rebondir. FenÃªtre d'opportunitÃ© courte.";
-  return"Signal de souffrance professionnelle. Peut Ã©voluer vers une demande de reconversion. Ã suivre.";
+  if(p.source==='Trustpilot')return"A déjà fait un bilan chez un concurrent et en est déçu. Cherche activement un meilleur organisme. Signal le plus fort possible : la décision est prise, il manque juste le bon interlocuteur.";
+  if(t.includes('bilan de comp')&&t.includes('cpf'))return"Mentionne explicitement le bilan et le CPF. Déjà dans la démarche, en train de comparer les organismes. Contacter maintenant.";
+  if(t.includes('bilan de comp'))return"A terminé ou envisage un bilan. En phase de décision active. Le timing est parfait.";
+  if(t.includes('burn'))return"En sortie de burn-out, cherche à se reconstruire. Très réceptif à un accompagnement bienveillant. Approche douce recommandée.";
+  if(t.includes('reconversion'))return"Réflexion active sur une reconversion. Cherche de la clarté sur son projet. Le bilan CPF est exactement l'outil dont il a besoin.";
+  if(t.includes('rupture')||t.includes('licenci'))return"Rupture ou licenciement récent. Personne disponible et motivée à rebondir. Fenêtre d'opportunité courte.";
+  return"Signal de souffrance professionnelle. Peut évoluer vers une demande de reconversion. À suivre.";
 }
 function msg(p){
   const t=(p.title+' '+p.text).toLowerCase();
   const raw=p.author||'';
   const prenom=raw.startsWith('u/')?raw.slice(2).split('_')[0]:raw.startsWith('@')?raw.slice(1):raw.split(' ')[0];
   const P=prenom.charAt(0).toUpperCase()+prenom.slice(1).toLowerCase();
-  if(p.source==='Trustpilot')return"Bonjour "+P+", j'ai lu votre avis et je comprends totalement votre dÃ©ception. Un parcours trop thÃ©orique, sans vraiment vous aider Ã  clarifier votre direction, c'est frustrant. Ce que vous dÃ©crivez, c'est exactement ce qu'on cherche Ã  Ã©viter. Chez nous, chaque bilan est construit autour de vous : vos contraintes rÃ©elles, votre personnalitÃ©. Si vous cherchez encore un accompagnement sÃ©rieux, je serais heureux d'Ã©changer 20 min avec vous â sans engagement.";
-  if(t.includes('bilan de comp')&&t.includes('cpf'))return"Bonjour "+P+", votre post m'a parlÃ©. Vous venez de terminer votre bilan â vous Ãªtes dans cette pÃ©riode un peu flottante oÃ¹ on a des pistes mais pas encore de cap solide. C'est exactement le moment oÃ¹ un accompagnement sur mesure peut faire la diffÃ©rence. Vous avez encore du CPF disponible ? Si oui, on pourrait en parler rapidement.";
-  if(t.includes('bilan de comp'))return"Bonjour "+P+", j'ai vu votre message. La question du bilan revient souvent Ã  ce moment charniÃ¨re. Ce que je vous propose : un Ã©change de 20 min pour comprendre votre situation et voir si notre approche peut vraiment vous aider. C'est gratuit, sans pression.";
-  if(t.includes('burn'))return"Bonjour "+P+", ce que vous partagez prend du courage. Un an et demi Ã  reconstruire, c'est long. Un bilan peut Ãªtre un espace pour faire le point Ã  votre rythme, sans pression. C'est entiÃ¨rement financÃ© par votre CPF. Si jamais vous ressentez le besoin d'en parler, je suis disponible.";
-  if(t.includes('reconversion'))return"Bonjour "+P+", j'ai lu votre situation. Tourner en rond sur une reconversion, c'est Ã©puisant. Le bilan CPF est fait exactement pour Ã§a : clarifier ce qui vous correspond, identifier des pistes concrÃ¨tes. C'est 100% financÃ©, sans avancer un euro. Envie qu'on en parle ?";
-  return"Bonjour "+P+", votre message m'a interpÃ©llÃ©. La situation que vous dÃ©crivez â ne plus se sentir Ã  sa place â c'est souvent le signe qu'il est temps de prendre du recul. Un bilan CPF peut vraiment aider Ã  y voir plus clair. Je serais heureux d'en discuter si Ã§a vous intÃ©resse.";
+  if(p.source==='Trustpilot')return"Bonjour "+P+", j'ai lu votre avis et je comprends totalement votre déception. Un parcours trop théorique, sans vraiment vous aider à clarifier votre direction, c'est frustrant. Ce que vous décrivez, c'est exactement ce qu'on cherche à éviter. Chez nous, chaque bilan est construit autour de vous : vos contraintes réelles, votre personnalité. Si vous cherchez encore un accompagnement sérieux, je serais heureux d'échanger 20 min avec vous — sans engagement.";
+  if(t.includes('bilan de comp')&&t.includes('cpf'))return"Bonjour "+P+", votre post m'a parlé. Vous venez de terminer votre bilan — vous êtes dans cette période un peu flottante où on a des pistes mais pas encore de cap solide. C'est exactement le moment où un accompagnement sur mesure peut faire la différence. Vous avez encore du CPF disponible ? Si oui, on pourrait en parler rapidement.";
+  if(t.includes('bilan de comp'))return"Bonjour "+P+", j'ai vu votre message. La question du bilan revient souvent à ce moment charnière. Ce que je vous propose : un échange de 20 min pour comprendre votre situation et voir si notre approche peut vraiment vous aider. C'est gratuit, sans pression.";
+  if(t.includes('burn'))return"Bonjour "+P+", ce que vous partagez prend du courage. Un an et demi à reconstruire, c'est long. Un bilan peut être un espace pour faire le point à votre rythme, sans pression. C'est entièrement financé par votre CPF. Si jamais vous ressentez le besoin d'en parler, je suis disponible.";
+  if(t.includes('reconversion'))return"Bonjour "+P+", j'ai lu votre situation. Tourner en rond sur une reconversion, c'est épuisant. Le bilan CPF est fait exactement pour ça : clarifier ce qui vous correspond, identifier des pistes concrètes. C'est 100% financé, sans avancer un euro. Envie qu'on en parle ?";
+  return"Bonjour "+P+", votre message m'a interpéllé. La situation que vous décrivez — ne plus se sentir à sa place — c'est souvent le signe qu'il est temps de prendre du recul. Un bilan CPF peut vraiment aider à y voir plus clair. Je serais heureux d'en discuter si ça vous intéresse.";
 }
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function srcTag(s){
@@ -236,7 +236,7 @@ function renderPosts(){
   if(!sorted.length){box.innerHTML='<div class="empty">Aucun signal pour ce filtre</div>';return;}
   const g={hot:[],warm:[],cold:[]};
   sorted.forEach(p=>g[p.h].push(p));
-  const labels={hot:'Ã CONTACTER MAINTENANT',warm:'EN RÃFLEXION',cold:'Ã SURVEILLER'};
+  const labels={hot:'À CONTACTER MAINTENANT',warm:'EN RÉFLEXION',cold:'À SURVEILLER'};
   let html='';
   ['hot','warm','cold'].forEach(h=>{
     if(!g[h].length)return;
@@ -249,12 +249,12 @@ function renderPosts(){
 <div class="card-top">
   <div class="card-who">
     <div class="ava ${av(p.author)}">${ini}</div>
-    <div><div class="who-name">${esc(p.author)}</div><div class="who-meta">${a.l} Â· ${esc(p.subreddit||p.source)} Â· ${esc(p.source)}</div></div>
+    <div><div class="who-name">${esc(p.author)}</div><div class="who-meta">${a.l} · ${esc(p.subreddit||p.source)} · ${esc(p.source)}</div></div>
   </div>
   <div class="tags">
     ${a.isNew?'<span class="tag tag-new">nouveau</span>':''}
     ${srcTag(p.source)}
-    <span class="tag tag-${h}">${h==='hot'?'Ã  contacter':h==='warm'?'en rÃ©flexion':'Ã  surveiller'}</span>
+    <span class="tag tag-${h}">${h==='hot'?'à contacter':h==='warm'?'en réflexion':'à surveiller'}</span>
   </div>
 </div>
 <div class="card-title">${esc(p.title)}</div>
@@ -265,14 +265,14 @@ function renderPosts(){
   <div class="why-txt">${w}</div>
 </div>
 <div class="msg-box">
-  <div class="msg-head"><div class="msg-dot"></div><span class="msg-lbl">Message personnalisÃ©</span><button class="msg-regen">â» regÃ©nÃ©rer</button></div>
+  <div class="msg-head"><div class="msg-dot"></div><span class="msg-lbl">Message personnalisé</span><button class="msg-regen">↻ regénérer</button></div>
   <div class="msg-txt">${msgEsc}</div>
 </div>
 <div class="card-foot">
-  <button class="btn-main btn-${h==='hot'?'hot':h==='warm'?'warm':'sec'}" onclick="this.textContent='â EnvoyÃ©'">Envoyer</button>
+  <button class="btn-main btn-${h==='hot'?'hot':h==='warm'?'warm':'sec'}" onclick="this.textContent='✓ Envoyé'">Envoyer</button>
   <button class="btn-sec" onclick="copyMsg(this)">Copier</button>
   
-  <span class="post-link" onclick="window.open(${JSON.stringify(p.url)},'_blank')">Voir le post â</span>
+  <span class="post-link" onclick="window.open(${JSON.stringify(p.url)},'_blank')">Voir le post →</span>
 </div>
 </div>`;
     });
@@ -313,11 +313,11 @@ async function loadData(manual=false){
     const seen=new Set();
     allPosts=data.posts.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;}).map(p=>({...p,h:heat(p),s:score(p),w:why(p),m:msg(p)}));
     updateStats();renderPosts();
-    document.getElementById('lastUpdate').textContent='Mis Ã  jour Ã  '+new Date().toLocaleTimeString('fr-FR');
+    document.getElementById('lastUpdate').textContent='Mis à jour à '+new Date().toLocaleTimeString('fr-FR');
     startCountdown();
   }catch(e){
     err.style.display='block';
-    if(manual)document.getElementById('results').innerHTML='<div class="empty">Erreur de connexion â rÃ©essaie dans quelques secondes</div>';
+    if(manual)document.getElementById('results').innerHTML='<div class="empty">Erreur de connexion — réessaie dans quelques secondes</div>';
   }
   btn.classList.remove('spinning');
 }
