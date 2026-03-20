@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-import requests, os, datetime
+import requests, os, datetime, threading, time
 
 app = Flask(__name__)
 CORS(app)
@@ -8,10 +8,8 @@ CORS(app)
 SUBREDDITS = ["france", "emploi", "travail", "poleemploi", "formation"]
 KEYWORDS = ["reconversion professionnelle", "burn-out", "burnout", "souffrance au travail", "changer de metier", "rupture conventionnelle", "bilan de competences", "plus de sens au travail", "demission CDI", "licenciement reconversion", "mal au travail"]
 VALIDATION_WORDS = ["travail", "emploi", "poste", "reconversion", "formation", "metier", "bilan", "cpf", "burn", "licenci", "demission", "rupture", "salaire", "carriere", "professionnel", "entreprise", "manager", "collegue", "patron"]
-
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
 YOUTUBE_QUERIES = ["reconversion professionnelle temoignage", "burn out travail temoignage", "bilan de competences CPF avis", "changer de metier temoignage"]
-
 GOOGLE_ALERTS_RSS = [
     "https://www.google.fr/alerts/feeds/05258671954159722660/14179317318011172716",
     "https://www.google.fr/alerts/feeds/05258671954159722660/4236035930240063314",
@@ -19,6 +17,9 @@ GOOGLE_ALERTS_RSS = [
     "https://www.google.fr/alerts/feeds/05258671954159722660/11065484875611424753",
     "https://www.google.fr/alerts/feeds/05258671954159722660/5243583938657747172"
 ]
+
+# Cache pour eviter les timeouts
+_cache = {"posts": [], "updated": 0}
 
 def get_reddit_posts():
     results = []
@@ -75,8 +76,7 @@ def get_google_alerts():
             import xml.etree.ElementTree as ET
             root = ET.fromstring(r.content)
             ns = {"atom": "http://www.w3.org/2005/Atom"}
-            entries = root.findall("atom:entry", ns)
-            for entry in entries:
+            for entry in root.findall("atom:entry", ns):
                 title = entry.findtext("atom:title", "", ns)
                 link = entry.find("atom:link", ns)
                 url = link.get("href", "") if link is not None else ""
@@ -86,22 +86,43 @@ def get_google_alerts():
                 if not any(w in (title+" "+summary).lower() for w in VALIDATION_WORDS): continue
                 try: ts = datetime.datetime.strptime(published[:19], "%Y-%m-%dT%H:%M:%S").timestamp()
                 except: ts = 0
-                results.append({"id": "ga_"+entry_id[-20:], "author": "Google Alerts", "subreddit": "Web", "title": title, "text": summary[:500], "score": 0, "comments": 0, "url": url, "date": ts, "keyword": "Google Alert", "source": "Google"})
+                results.append({"id": "ga_"+str(hash(entry_id))[-10:], "author": "Google Alerts", "subreddit": "Web", "title": title, "text": summary[:500], "score": 0, "comments": 0, "url": url, "date": ts, "keyword": "Google Alert", "source": "Google"})
         except Exception as e:
-            print("Google Alerts erreur", feed_url, e)
+            print("Google Alerts erreur", e)
     return results
+
+def refresh_cache():
+    global _cache
+    results = get_reddit_posts() + get_youtube_comments() + get_google_alerts()
+    seen = set()
+    unique = [item for item in results if not (item["id"] in seen or seen.add(item["id"]))]
+    unique.sort(key=lambda x: x.get("date", 0), reverse=True)
+    _cache = {"posts": unique, "updated": time.time()}
+    print("Cache updated:", len(unique), "posts")
+
+def background_refresh():
+    while True:
+        try:
+            refresh_cache()
+        except Exception as e:
+            print("Background refresh error:", e)
+        time.sleep(1800)
 
 @app.route("/")
 def index():
     with open("dashboard.html", "r", encoding="utf-8") as f: return f.read()
 
+@app.route("/ping")
+def ping():
+    return jsonify({"status": "ok"})
+
 @app.route("/search")
 def search():
-    results = get_reddit_posts() + get_youtube_comments() + get_google_alerts()
-    seen = set()
-    unique = [item for item in results if not (item["id"] in seen or seen.add(item["id"]))]
-    unique.sort(key=lambda x: x.get("date", 0), reverse=True)
-    return jsonify({"posts": unique, "total": len(unique)})
+    if not _cache["posts"] or (time.time() - _cache["updated"]) > 3600:
+        refresh_cache()
+    return jsonify({"posts": _cache["posts"], "total": len(_cache["posts"])})
 
 if __name__ == "__main__":
+    t = threading.Thread(target=background_refresh, daemon=True)
+    t.start()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5001)), debug=False)
