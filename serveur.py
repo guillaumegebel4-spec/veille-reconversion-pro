@@ -126,5 +126,9 @@ def search():
     unique.sort(key=lambda x: x.get("date", 0), reverse=True)
     return jsonify({"posts": unique, "total": len(unique)})
 
+@app.route("/ping")
+def ping():
+    return jsonify({"status": "ok"})
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5001)), debug=False)
