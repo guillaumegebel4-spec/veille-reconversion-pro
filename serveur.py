@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-import requests, os, datetime, threading, time
+import requests, os, datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -10,8 +10,6 @@ KEYWORDS = ["reconversion professionnelle", "burn-out", "burnout", "souffrance a
 VALIDATION_WORDS = ["travail", "emploi", "poste", "reconversion", "formation", "metier", "bilan", "cpf", "burn", "licenci", "demission", "rupture", "salaire", "carriere", "professionnel", "entreprise", "manager", "collegue", "patron"]
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
 YOUTUBE_QUERIES = ["reconversion professionnelle temoignage", "burn out travail temoignage", "bilan de competences CPF avis", "changer de metier temoignage"]
-
-_cache = {"posts": [], "updated": 0}
 
 def get_reddit_posts():
     results = []
@@ -58,39 +56,17 @@ def get_youtube_comments():
             print("YouTube erreur", query, e)
     return results
 
-def refresh_cache():
-    global _cache
-    try:
-        results = get_reddit_posts() + get_youtube_comments()
-        seen = set()
-        unique = [item for item in results if not (item["id"] in seen or seen.add(item["id"]))]
-        unique.sort(key=lambda x: x.get("date", 0), reverse=True)
-        _cache = {"posts": unique, "updated": time.time()}
-        print("Cache OK:", len(unique), "posts")
-    except Exception as e:
-        print("Cache erreur:", e)
-
-def background_refresh():
-    while True:
-        refresh_cache()
-        time.sleep(1800)
-
 @app.route("/")
 def index():
     with open("dashboard.html", "r", encoding="utf-8") as f: return f.read()
 
-@app.route("/ping")
-def ping():
-    return jsonify({"status": "ok"})
-
 @app.route("/search")
 def search():
-    if not _cache["posts"]:
-        refresh_cache()
-    return jsonify({"posts": _cache["posts"], "total": len(_cache["posts"])})
-
-t = threading.Thread(target=background_refresh, daemon=True)
-t.start()
+    results = get_reddit_posts() + get_youtube_comments()
+    seen = set()
+    unique = [item for item in results if not (item["id"] in seen or seen.add(item["id"]))]
+    unique.sort(key=lambda x: x.get("date", 0), reverse=True)
+    return jsonify({"posts": unique, "total": len(unique)})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5001)), debug=False)
