@@ -2,158 +2,345 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Signal — Pipeline Prospects CPF</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Bricolage+Grotesque:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prospects — Bilan CPF</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f3ee;--bg2:#fff;--bg3:#f0ede8;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1a1a1a;--text2:#666;--text3:#999;--red:#c0392b;--red-l:#fce4e1;--red-b:rgba(192,57,43,0.2);--amber:#b7770d;--amber-l:#fef3cd;--amber-b:rgba(183,119,13,0.2);--green:#1e6b3a;--green-l:#d4edda;--green-b:rgba(30,107,58,0.2);--purple:#534ab7;--purple-l:#eeedfe;--purple-b:rgba(83,74,183,0.2);--radius:8px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Bricolage Grotesque',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
-.mono{font-family:'IBM Plex Mono',monospace}
-.topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:100}
-.tb-live{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);background:var(--green-l);border:1px solid var(--green-b);padding:3px 8px;border-radius:20px;font-weight:500}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.tb-title{font-size:13px;font-weight:500;color:var(--text)}
-.tb-r{margin-left:auto;display:flex;align-items:center;gap:10px}
-.tb-time{font-size:11px;color:var(--text3)}
-.btn-refresh{height:30px;padding:0 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Bricolage Grotesque',sans-serif}
-.btn-refresh:hover{background:var(--bg3)}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;color:#1d1d1f;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:#0066cc;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.nav{background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:0.5px solid rgba(0,0,0,0.1);padding:0 32px;height:52px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:#34c759;flex-shrink:0;animation:pulse 3s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-title{font-size:15px;font-weight:500;letter-spacing:-0.2px}
+.nav-sep{width:1px;height:16px;background:rgba(0,0,0,0.12)}
+.nav-time{font-size:12px;color:#86868b}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-btn{height:28px;padding:0 14px;border-radius:14px;border:0.5px solid rgba(0,0,0,0.18);background:transparent;font-size:12px;cursor:pointer;color:#1d1d1f;font-family:inherit;display:flex;align-items:center;gap:5px;transition:background .12s}
+.nav-btn:hover{background:rgba(0,0,0,0.05)}
 .spin{display:inline-block}
-.btn-refresh.spinning .spin{animation:rotate .7s linear infinite}
-@keyframes rotate{to{transform:rotate(360deg)}}
-.pipeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--border);background:var(--bg2)}
-.pc{padding:16px 24px;border-right:1px solid var(--border)}
-.pc:last-child{border-right:none}
-.pc-l{font-size:10px;color:var(--text3);font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;margin-bottom:4px}
-.pc-n{font-size:30px;font-weight:600;line-height:1;margin-bottom:6px}
-.pc-bar{height:2px;background:var(--bg3);border-radius:1px;overflow:hidden;margin-bottom:5px}
-.pc-fill{height:100%;border-radius:1px;transition:width .8s ease}
-.pc-s{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace}
-.pc.total .pc-n{color:var(--text)}.pc.total .pc-fill{background:#888}
-.pc.hot .pc-n{color:var(--red)}.pc.hot .pc-fill{background:var(--red)}
-.pc.warm .pc-n{color:var(--amber)}.pc.warm .pc-fill{background:#e67e22}
-.pc.msg .pc-n{color:var(--green)}.pc.msg .pc-fill{background:var(--green)}
-.toolbar{display:flex;align-items:center;gap:6px;padding:10px 24px;background:var(--bg2);border-bottom:1px solid var(--border)}
-.fbtn{height:30px;padding:0 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;color:var(--text2);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Bricolage Grotesque',sans-serif;transition:all .12s}
-.fbtn:hover{background:var(--bg3)}
-.fbtn.active-all{background:var(--text);color:#fff;border-color:var(--text)}
-.fbtn.active-hot{background:var(--red-l);border-color:var(--red);color:var(--red);font-weight:500}
-.fbtn.active-warm{background:var(--amber-l);border-color:var(--amber);color:var(--amber);font-weight:500}
-.fbtn.active-cold{background:var(--green-l);border-color:var(--green);color:var(--green);font-weight:500}
-.fbtn-cnt{font-size:10px;font-weight:600;padding:1px 5px;border-radius:8px;background:rgba(0,0,0,0.08)}
-.sort-sel{margin-left:auto;height:30px;padding:0 10px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-size:12px;cursor:pointer;outline:none;font-family:'Bricolage Grotesque',sans-serif}
-.feed{padding:20px 24px;display:flex;flex-direction:column;gap:8px;max-width:960px;margin:0 auto}
-.grp-header{display:flex;align-items:center;gap:8px;padding:8px 0 4px;font-size:10px;font-family:'IBM Plex Mono',monospace;font-weight:500;letter-spacing:.12em}
-.grp-header.hot{color:var(--red)}.grp-header.warm{color:var(--amber)}.grp-header.cold{color:var(--green)}
-.grp-line{flex:1;height:1px;background:var(--border)}
-.grp-cnt{font-size:10px;padding:1px 6px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-weight:500}
-.hot .grp-cnt{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
-.warm .grp-cnt{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
-.cold .grp-cnt{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
-.new-pill{font-size:10px;padding:1px 6px;border-radius:10px;background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);font-family:'IBM Plex Mono',monospace}
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);display:flex;overflow:hidden;transition:border-color .15s}
-.card:hover{border-color:var(--border2)}.card.is-new{border-color:rgba(183,119,13,0.3)}
-.card-score{width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;border-right:1px solid var(--border);flex-shrink:0;gap:4px}
-.score-n{font-size:22px;font-weight:600;line-height:1;font-family:'IBM Plex Mono',monospace}
-.score-l{font-size:9px;color:var(--text3);font-family:'IBM Plex Mono',monospace;text-align:center;letter-spacing:.05em}
-.score-line{width:24px;height:2px;border-radius:1px;margin-top:4px}
-.hot-c .score-n{color:var(--red)}.hot-c .score-line{background:var(--red)}
-.warm-c .score-n{color:var(--amber)}.warm-c .score-line{background:#e67e22}
-.card-body{flex:1;padding:14px 16px;min-width:0}
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
-.card-who{display:flex;align-items:center;gap:8px}
-.ava{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
-.ava-r{background:#fce4e1;color:var(--red)}.ava-a{background:var(--amber-l);color:var(--amber)}
-.ava-b{background:#e6f1fb;color:#185fa5}.ava-p{background:var(--purple-l);color:var(--purple)}.ava-g{background:var(--green-l);color:var(--green)}
-.card-name{font-size:13px;font-weight:500}
-.card-meta{font-size:11px;color:var(--text3);margin-top:1px;font-family:'IBM Plex Mono',monospace}
-.card-badges{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
-.badge-hot{background:var(--red-l);color:var(--red)}.badge-warm{background:var(--amber-l);color:var(--amber)}.badge-cold{background:var(--green-l);color:var(--green)}
-.badge-new{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
-.badge-src{font-size:10px;padding:2px 7px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-weight:400;background:var(--bg3);color:var(--text2)}
-.badge-tp{background:var(--green-l);color:var(--green)}.badge-yt{background:#fce4e1;color:var(--red)}
-.card-title{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.4}
-.card-text{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px}
-.signal-box{border:1px solid var(--purple-b);background:var(--purple-l);border-radius:6px;padding:8px 12px;margin-bottom:8px}
-.signal-head{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.signal-dot{width:5px;height:5px;border-radius:50%;background:var(--purple)}
-.signal-lbl{font-size:10px;font-weight:500;color:var(--purple);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
-.signal-val{margin-left:auto;font-size:12px;font-weight:600;font-family:'IBM Plex Mono',monospace}
-.signal-val.hot{color:var(--red)}.signal-val.warm{color:var(--amber)}
-.signal-bar{height:2px;background:rgba(83,74,183,0.15);border-radius:1px;overflow:hidden;margin-bottom:5px}
-.signal-fill{height:100%;border-radius:1px;background:var(--purple)}
-.signal-txt{font-size:12px;color:#3c3489;line-height:1.5}
-.msg-box{border:1px solid var(--border2);background:var(--bg3);border-radius:6px;padding:8px 12px;margin-bottom:8px}
-.msg-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.msg-dot{width:5px;height:5px;border-radius:50%;background:var(--text3)}
-.msg-lbl{font-size:10px;font-weight:500;color:var(--text2);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
-.msg-regen{margin-left:auto;font-size:10px;padding:2px 8px;border:1px solid var(--border2);border-radius:4px;background:var(--bg2);color:var(--text2);cursor:pointer;font-family:'Bricolage Grotesque',sans-serif}
-.msg-regen:hover{background:var(--border)}
-.msg-txt{font-size:12px;color:var(--text2);line-height:1.6;font-style:italic}
-.card-actions{display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid var(--border)}
-.btn-send{height:30px;padding:0 16px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;transition:background .12s}
-.btn-send:hover{background:#922b21}.btn-send.warm{background:#e67e22}.btn-send.warm:hover{background:#b7770d}
-.btn-copy,.btn-archive{height:30px;padding:0 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;font-size:12px;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;color:var(--text)}
-.btn-copy:hover,.btn-archive:hover{background:var(--bg3)}
-.card-link{margin-left:auto;font-size:11px;color:#2563eb;text-decoration:none;font-family:'IBM Plex Mono',monospace;white-space:nowrap}
-.card-link:hover{text-decoration:underline}
-.loading{text-align:center;padding:60px;color:var(--text3)}
-.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--text2);border-radius:50%;animation:rotate .7s linear infinite;margin:0 auto 12px}
-.empty{text-align:center;padding:60px;color:var(--text3);font-size:13px}
-.error-bar{background:#fce4e1;border:1px solid var(--red-b);border-radius:6px;padding:8px 14px;margin-bottom:12px;font-size:12px;color:var(--red);display:none}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
-.status-dot.loading{background:#e67e22;animation:blink .5s infinite}.status-dot.error{background:var(--red);animation:none}
+.nav-btn.spinning .spin{animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.08)}
+.stat{padding:18px 32px;border-right:0.5px solid rgba(0,0,0,0.08)}
+.stat:last-child{border-right:none}
+.stat-n{font-size:34px;font-weight:600;letter-spacing:-1.5px;line-height:1}
+.stat-l{font-size:12px;color:#86868b;margin-top:3px;letter-spacing:-0.1px}
+.stat-bar{height:2px;margin-top:10px;border-radius:1px;background:#f0f0f0;overflow:hidden}
+.stat-fill{height:100%;border-radius:1px;transition:width .8s ease}
+.n1{color:#1d1d1f}.f1{background:#aeaeb2}
+.n2{color:#ff3b30}.f2{background:#ff3b30}
+.n3{color:#ff9500}.f3{background:#ff9500}
+.n4{color:#34c759}.f4{background:#34c759}
+
+.toolbar{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.08);padding:8px 32px;display:flex;gap:5px;align-items:center}
+.fbtn{height:28px;padding:0 14px;border-radius:14px;border:0.5px solid rgba(0,0,0,0.15);background:transparent;font-size:13px;cursor:pointer;color:#86868b;font-family:inherit;transition:all .12s;display:flex;align-items:center;gap:5px}
+.fbtn:hover{background:rgba(0,0,0,0.04);color:#1d1d1f}
+.fbtn.active-all{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
+.fbtn.active-hot{background:#fff2f1;border-color:rgba(255,59,48,.3);color:#c0392b}
+.fbtn.active-warm{background:#fff8ee;border-color:rgba(255,149,0,.3);color:#b45309}
+.cnt{font-size:10px;font-weight:600;padding:1px 5px;border-radius:8px;background:rgba(0,0,0,0.07)}
+.active-hot .cnt{background:rgba(255,59,48,.12);color:#c0392b}
+.active-warm .cnt{background:rgba(255,149,0,.12);color:#b45309}
+.sort-sel{margin-left:auto;height:28px;padding:0 10px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.15);background:#fff;font-size:12px;color:#86868b;cursor:pointer;font-family:inherit;outline:none}
+
+.feed{padding:24px 32px;display:flex;flex-direction:column;gap:8px;max-width:880px}
+
+.sec{display:flex;align-items:center;gap:10px;padding:10px 0 4px;font-size:11px;font-weight:600;letter-spacing:.04em;color:#86868b}
+.sec.hot{color:#ff3b30}.sec.warm{color:#ff9500}
+.sec-line{flex:1;height:0.5px;background:rgba(0,0,0,0.08)}
+.sec-n{font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(0,0,0,0.06);color:#86868b;font-weight:500}
+.hot .sec-n{background:rgba(255,59,48,.1);color:#c0392b}
+.warm .sec-n{background:rgba(255,149,0,.1);color:#b45309}
+.new-pill{font-size:10px;padding:2px 7px;border-radius:10px;background:#fff8ee;color:#b45309;border:0.5px solid rgba(255,149,0,.2)}
+
+.card{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:18px;padding:20px 22px;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:rgba(0,0,0,.2);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.card.is-urgent{border-color:rgba(255,59,48,.2)}
+.card.is-new{border-color:rgba(255,149,0,.2)}
+
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.card-who{display:flex;align-items:center;gap:10px}
+.ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.ava-0{background:#ffeeed;color:#c0392b}.ava-1{background:#fff3e0;color:#e65100}
+.ava-2{background:#e8f5e9;color:#2e7d32}.ava-3{background:#e3f2fd;color:#1565c0}.ava-4{background:#f3e5f5;color:#6a1b9a}
+.who-name{font-size:13px;font-weight:500;letter-spacing:-0.1px}
+.who-meta{font-size:11px;color:#86868b;margin-top:1px}
+.tags{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;letter-spacing:-0.1px}
+.tag-hot{background:#ffeeed;color:#c0392b}
+.tag-warm{background:#fff8ee;color:#b45309}
+.tag-new{background:#fff8ee;color:#b45309;border:0.5px solid rgba(255,149,0,.25)}
+.tag-src{background:#f5f5f7;color:#86868b;font-weight:400}
+.tag-tp{background:#e8f5e9;color:#2e7d32}
+.tag-yt{background:#ffeeed;color:#c0392b}
+
+.card-title{font-size:14px;font-weight:500;line-height:1.45;margin-bottom:6px;letter-spacing:-0.2px}
+.card-txt{font-size:13px;color:#515154;line-height:1.65;margin-bottom:14px}
+
+.why-box{background:#f5f3ff;border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.why-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.why-dot{width:5px;height:5px;border-radius:50%;background:#7c3aed;flex-shrink:0}
+.why-lbl{font-size:11px;color:#6d28d9;font-weight:500;letter-spacing:.03em}
+.why-pct{margin-left:auto;font-size:12px;font-weight:600;color:#7c3aed;font-variant-numeric:tabular-nums}
+.why-track{height:2.5px;background:rgba(124,58,237,.15);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.why-prog{height:100%;border-radius:2px;background:#7c3aed;transition:width .6s ease}
+.why-txt{font-size:12px;color:#5b21b6;line-height:1.55}
+
+.msg-box{border:0.5px solid rgba(0,0,0,0.1);border-radius:10px;padding:12px 14px;margin-bottom:14px;background:#fafafa}
+.msg-head{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.msg-dot{width:4px;height:4px;border-radius:50%;background:#aeaeb2;flex-shrink:0}
+.msg-lbl{font-size:11px;color:#86868b;font-weight:500;letter-spacing:.03em}
+.msg-regen{margin-left:auto;font-size:11px;color:#0066cc;background:transparent;border:none;cursor:pointer;padding:0;font-family:inherit}
+.msg-regen:hover{text-decoration:underline}
+.msg-txt{font-size:13px;color:#515154;line-height:1.65;font-style:italic}
+
+.card-foot{display:flex;align-items:center;gap:6px;padding-top:14px;border-top:0.5px solid rgba(0,0,0,0.07)}
+.btn-main{height:32px;padding:0 18px;border-radius:16px;border:none;font-size:13px;font-weight:500;cursor:pointer;color:#fff;font-family:inherit;transition:opacity .12s}
+.btn-main:hover{opacity:.85}
+.btn-hot{background:#ff3b30}.btn-warm{background:#ff9500}
+.btn-sec{height:32px;padding:0 14px;border-radius:16px;border:0.5px solid rgba(0,0,0,0.18);background:transparent;font-size:13px;cursor:pointer;color:#1d1d1f;font-family:inherit;transition:background .12s}
+.btn-sec:hover{background:rgba(0,0,0,.04)}
+.post-link{margin-left:auto;font-size:12px;color:#0066cc}
+.post-link:hover{text-decoration:underline;cursor:pointer}
+
+.loading{text-align:center;padding:80px 0;color:#86868b}
+.spinner{width:24px;height:24px;border:2px solid #e5e5ea;border-top-color:#86868b;border-radius:50%;animation:rot .7s linear infinite;margin:0 auto 12px}
+.empty{text-align:center;padding:80px 0;color:#86868b;font-size:13px}
+.err-bar{background:#fff2f1;border:0.5px solid rgba(255,59,48,.2);border-radius:10px;padding:10px 16px;margin-bottom:12px;font-size:12px;color:#c0392b;display:none}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <span id="statusDot" class="status-dot"></span>
-  <span class="tb-live"><span class="live-dot"></span>Live</span>
-  <span class="tb-title">Pipeline prospects — Bilan de compétences CPF</span>
-  <div class="tb-r">
-    <span class="tb-time" id="lastUpdate">Jamais mis à jour</span>
-    <span class="tb-time mono" id="autoRefreshInfo">· actu. dans <b id="nextRefresh">30</b> min</span>
-    <button class="btn-refresh" onclick="loadData(true)" id="refreshBtn"><span class="spin">↻</span> Actualiser</button>
+
+<div class="nav">
+  <div class="nav-dot"></div>
+  <span class="nav-title">Prospects — Bilan CPF</span>
+  <div class="nav-sep"></div>
+  <span class="nav-time" id="lastUpdate">Chargement...</span>
+  <div class="nav-r">
+    <span style="font-size:12px;color:#86868b">actu. dans <span id="nextRefresh">30</span> min</span>
+    <button class="nav-btn" onclick="loadData(true)" id="refreshBtn"><span class="spin">↻</span> Actualiser</button>
   </div>
 </div>
-<div class="pipeline">
-  <div class="pc total"><div class="pc-l">SIGNAUX DÉTECTÉS</div><div class="pc-n" id="sTotal">—</div><div class="pc-bar"><div class="pc-fill" id="barTotal" style="width:100%"></div></div><div class="pc-s">3 sources actives</div></div>
-  <div class="pc hot"><div class="pc-l">PROSPECTS QUALIFIÉS</div><div class="pc-n" id="sHot">—</div><div class="pc-bar"><div class="pc-fill" id="barHot" style="width:0%"></div></div><div class="pc-s" id="sHotSub">score IA ≥ 80</div></div>
-  <div class="pc warm"><div class="pc-l">PRÊTS À CLOSER</div><div class="pc-n" id="sWarm">—</div><div class="pc-bar"><div class="pc-fill" id="barWarm" style="width:0%"></div></div><div class="pc-s" id="sWarmSub">en réflexion</div></div>
-  <div class="pc msg"><div class="pc-l">MESSAGE GÉNÉRÉ</div><div class="pc-n" id="sCold">—</div><div class="pc-bar"><div class="pc-fill" id="barCold" style="width:0%"></div></div><div class="pc-s">veille froide</div></div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n n1" id="sTotal">—</div><div class="stat-l">signaux détectés</div><div class="stat-bar"><div class="stat-fill f1" style="width:100%"></div></div></div>
+  <div class="stat"><div class="stat-n n2" id="sHot">—</div><div class="stat-l">à contacter maintenant</div><div class="stat-bar"><div class="stat-fill f2" id="bHot" style="width:0%"></div></div></div>
+  <div class="stat"><div class="stat-n n3" id="sWarm">—</div><div class="stat-l">en réflexion</div><div class="stat-bar"><div class="stat-fill f3" id="bWarm" style="width:0%"></div></div></div>
+  <div class="stat"><div class="stat-n n4" id="sCold">—</div><div class="stat-l">à surveiller</div><div class="stat-bar"><div class="stat-fill f4" id="bCold" style="width:0%"></div></div></div>
 </div>
+
 <div class="toolbar">
-  <button class="fbtn active-all" onclick="setFilter('all')" id="f-all">Tous</button>
-  <button class="fbtn" onclick="setFilter('hot')" id="f-hot">Prêts à closer <span class="fbtn-cnt" id="cnt-hot">—</span></button>
-  <button class="fbtn" onclick="setFilter('warm')" id="f-warm">Tièdes <span class="fbtn-cnt" id="cnt-warm">—</span></button>
-  <button class="fbtn" onclick="setFilter('cold')" id="f-cold">Veille</button>
-  <select class="sort-sel" id="sortSelect" onchange="renderPosts()"><option value="date">Plus récents</option><option value="heat">Par chaleur</option><option value="score">Par score Reddit</option></select>
+  <button class="fbtn active-all" id="f-all" onclick="setFilter('all')">Tous</button>
+  <button class="fbtn" id="f-hot" onclick="setFilter('hot')">À contacter <span class="cnt" id="cnt-hot">—</span></button>
+  <button class="fbtn" id="f-warm" onclick="setFilter('warm')">En réflexion <span class="cnt" id="cnt-warm">—</span></button>
+  <button class="fbtn" id="f-cold" onclick="setFilter('cold')">À surveiller</button>
+  <select class="sort-sel" id="sortSel" onchange="renderPosts()">
+    <option value="date">Plus récents</option>
+    <option value="heat">Par pertinence</option>
+  </select>
 </div>
+
 <div class="feed">
-  <div id="errorBar" class="error-bar">⚠️ Erreur de connexion — réessai dans quelques secondes...</div>
-  <div id="results"><div class="loading"><div class="spinner"></div>Récupération des signaux...</div></div>
+  <div id="errBar" class="err-bar">Render se réveille, chargement en cours...</div>
+  <div id="results"><div class="loading"><div class="spinner"></div>Analyse des signaux en cours...</div></div>
 </div>
+
 <script>
-let allPosts=[],currentFilter='all',refreshTimer=null,countdownTimer=null,minutesLeft=30;
-const AVA=['ava-r','ava-a','ava-b','ava-p','ava-g'];
-function avaClass(n){return AVA[(n||'A').charCodeAt(0)%AVA.length];}
-function getAge(ts){if(!ts)return{label:'?',isNew:false};const diff=(Date.now()/1000)-ts,h=diff/3600,d=diff/86400;if(h<24)return{label:"aujourd'hui",isNew:true};if(d<2)return{label:'hier',isNew:true};if(d<7)return{label:'il y a '+Math.floor(d)+'j',isNew:false};if(d<30)return{label:'il y a '+Math.floor(d/7)+'sem',isNew:false};return{label:'il y a '+Math.floor(d/30)+'mois',isNew:false};}
-function qualifyHeat(p){const t=(p.title+' '+p.text).toLowerCase(),kw=p.keyword||'';if(t.includes('bilan de comp')||t.includes('cpf')||kw.includes('bilan')||t.includes('financer ma formation'))return'hot';if(t.includes('burn')||t.includes('reconversion')||t.includes('changer de m')||t.includes('souffrance')||t.includes('rupture conventionnelle')||t.includes('plus de sens')||t.includes('demission')||t.includes('degoute')||t.includes('desespere'))return'warm';return'cold';}
-function getScore(p){const t=(p.title+' '+p.text).toLowerCase();let s=30;if(t.includes('bilan de comp'))s+=35;if(t.includes('cpf'))s+=25;if(t.includes('financer'))s+=20;if(t.includes('reconversion'))s+=15;if(t.includes('burn'))s+=12;if(t.includes('souffrance'))s+=10;if(p.source==='Trustpilot')s+=15;if(p.score>10)s+=5;if(p.comments>5)s+=3;const age=(Date.now()/1000-(p.date||0))/86400;if(age<1)s+=8;else if(age<3)s+=4;return Math.min(s,99);}
-function getMessage(p){const t=(p.title+' '+p.text).toLowerCase(),name=(p.author||'').replace('u/','').replace('@',''),hi=name?'Bonjour '+name+',':'Bonjour,';if(p.source==='Trustpilot')return hi+" j'ai vu votre avis suite à votre bilan. Si vous cherchez un accompagnement plus sérieux et personnalisé, je serais ravi d'en discuter 15 min — c'est gratuit et sans engagement.";if(t.includes('bilan de comp'))return hi+" j'ai vu votre post sur votre reconversion après votre bilan. C'est exactement le bon moment pour utiliser votre CPF restant — je serais ravi d'en discuter 15 min avec vous si vous êtes intéressé(e).";if(t.includes('burn'))return hi+" ce que vous traversez est difficile mais vous n'êtes pas seul(e). Un bilan de compétences peut être une belle première étape pour reprendre confiance et trouver un cap. C'est financé CPF, sans engagement. Ça vous intéresse ?";if(t.includes('reconversion'))return hi+" j'ai vu votre situation. Le bilan de compétences CPF peut vous aider à identifier exactement où aller. C'est 100% financé. Envie qu'on en parle ?";return hi+" votre message m'a interpellé. Si vous êtes en réflexion sur votre carrière, le bilan de compétences CPF pourrait vous aider — c'est gratuit et sans engagement.";}
-function getAnalysis(p){const t=(p.title+' '+p.text).toLowerCase();if(p.source==='Trustpilot')return"Déçu d'un concurrent, cherche activement un meilleur organisme. Contact prioritaire.";if(t.includes('bilan de comp'))return"Bilan CPF terminé, phase de transition active. Cherche une formation concrète. Financement CPF disponible. Fenêtre d'opportunité : maintenant.";if(t.includes('burn'))return"Burn-out actif + signal reconversion. Très réceptif mais fragile. Approche bienveillante requise. Fort potentiel à 30 jours.";if(t.includes('reconversion'))return"En réflexion active sur sa reconversion. Moment idéal pour présenter le bilan CPF comme outil de clarification.";if(t.includes('rupture'))return"Rupture conventionnelle ou licenciement. Personne disponible et motivée à rebondir. Financement Transition Pro possible.";return"Signal faible à surveiller. Relancer si le signal se renforce.";}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function srcBadge(s){if(s==='YouTube')return '<span class="badge badge-src badge-yt">YouTube</span>';if(s==='Trustpilot')return '<span class="badge badge-src badge-tp">Trustpilot</span>';return '<span class="badge badge-src">Reddit</span>';}
-function sortPosts(posts){const mode=document.getElementById('sortSelect').value;return[...posts].sort((a,b)=>{if(mode==='date')return(b.date||0)-(a.date||0);if(mode==='heat'){const r={hot:0,warm:1,cold:2};return r[a.heat]-r[b.heat]||(b.date||0)-(a.date||0);}return(b.score||0)-(a.score||0);});}
-function setFilter(f){currentFilter=f;['all','hot','warm','cold'].forEach(x=>{document.getElementById('f-'+x).className='fbtn'+(x===f?' active-'+f:'');});renderPosts();}
-function renderPosts(){const filtered=currentFilter==='all'?allPosts:allPosts.filter(p=>p.heat===currentFilter);const sorted=sortPosts(filtered);const box=document.getElementById('results');if(!sorted.length){box.innerHTML='<div class="empty">Aucun résultat pour ce filtre</div>';return;}const groups={hot:[],warm:[],cold:[]};sorted.forEach(p=>groups[p.heat].push(p));const labels={hot:'PRÊTS À CLOSER',warm:'TIÈDES — À RELANCER',cold:'VEILLE FROIDE'};let html='';['hot','warm','cold'].forEach(h=>{if(!groups[h].length)return;const newCnt=groups[h].filter(p=>getAge(p.date).isNew).length;html+=`<div class="grp-header ${h}">${labels[h]}<div class="grp-line"></div><span class="grp-cnt">${groups[h].length}</span>${newCnt?`<span class="new-pill">${newCnt} nouveau${newCnt>1?'x':''}</span>`:''}</div>`;groups[h].forEach(p=>{const age=getAge(p.date),score=p.iaScore||getScore(p),msg=getMessage(p),analysis=getAnalysis(p),initials=(p.author||'?').substring(0,2).toUpperCase(),isBtnWarm=h==='warm';html+=`<div class="card${age.isNew?' is-new':''}"><div class="card-score ${h}-c"><div class="score-n">${score}</div><div class="score-l">score IA</div><div class="score-line"></div></div><div class="card-body"><div class="card-top"><div class="card-who"><div class="ava ${avaClass(p.author)}">${initials}</div><div><div class="card-name">${esc(p.author)}</div><div class="card-meta">${age.label} · ${esc(p.subreddit)} · ${esc(p.source||'Reddit')}</div></div></div><div class="card-badges">${age.isNew?'<span class="badge badge-new">+ nouveau</span>':''}${srcBadge(p.source)}<span class="badge badge-${h}">${h==='hot'?'PRÊT À CLOSER':h==='warm'?'TIÈDE':'VEILLE'}</span></div></div><div class="card-title">${esc(p.title)}</div><div class="card-text">${esc(p.text.substring(0,200))}${p.text.length>200?'...':''}</div><div class="signal-box"><div class="signal-head"><div class="signal-dot"></div><span class="signal-lbl">SIGNAL IA</span><span class="signal-val ${h==='hot'?'hot':'warm'}">${score} / 100</span></div><div class="signal-bar"><div class="signal-fill" style="width:${score}%"></div></div><div class="signal-txt">${analysis}</div></div><div class="msg-box"><div class="msg-head"><div class="msg-dot"></div><span class="msg-lbl">MESSAGE GÉNÉRÉ PAR IA</span><button class="msg-regen">↻ regénérer</button></div><div class="msg-txt">"${esc(msg)}"</div></div><div class="card-actions"><button class="btn-send${isBtnWarm?' warm':''}" onclick="this.textContent='✓ Envoyé'">Envoyer le message</button><button class="btn-copy" onclick="navigator.clipboard.writeText(${JSON.stringify(msg)});this.textContent='✓ Copié';setTimeout(()=>this.textContent='Copier',2000)">Copier</button><button class="btn-archive" onclick="this.closest('.card').style.opacity='.3'">Archiver</button><a class="card-link" href="${p.url}" target="_blank">Voir le post →</a></div></div></div>`;});});box.innerHTML=html;}
-function updateStats(){const hot=allPosts.filter(p=>p.heat==='hot'),warm=allPosts.filter(p=>p.heat==='warm'),cold=allPosts.filter(p=>p.heat==='cold'),total=allPosts.length;document.getElementById('sTotal').textContent=total;document.getElementById('sHot').textContent=hot.length;document.getElementById('sWarm').textContent=warm.length;document.getElementById('sCold').textContent=cold.length;document.getElementById('cnt-hot').textContent=hot.length;document.getElementById('cnt-warm').textContent=warm.length;if(total>0){document.getElementById('barHot').style.width=Math.round(hot.length/total*100)+'%';document.getElementById('barWarm').style.width=Math.round(warm.length/total*100)+'%';document.getElementById('barCold').style.width=Math.round(cold.length/total*100)+'%';}const newHot=hot.filter(p=>getAge(p.date).isNew).length;document.getElementById('sHotSub').textContent=newHot>0?newHot+' nouveau'+(newHot>1?'x':''):'score IA ≥ 80';}
-function startCountdown(){clearInterval(countdownTimer);minutesLeft=30;document.getElementById('nextRefresh').textContent=minutesLeft;countdownTimer=setInterval(()=>{minutesLeft--;if(minutesLeft<=0)minutesLeft=30;document.getElementById('nextRefresh').textContent=minutesLeft;},60000);}
-async function loadData(manual=false){const dot=document.getElementById('statusDot'),btn=document.getElementById('refreshBtn'),errBar=document.getElementById('errorBar');dot.className='status-dot loading';btn.classList.add('spinning');if(manual)document.getElementById('results').innerHTML='<div class="loading"><div class="spinner"></div>Récupération des signaux...</div>';try{const r=await fetch('/search');if(!r.ok)throw new Error('erreur');const data=await r.json();errBar.style.display='none';dot.className='status-dot';const seen=new Set();allPosts=data.posts.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;}).map(p=>({...p,heat:qualifyHeat(p),iaScore:getScore(p)}));updateStats();renderPosts();document.getElementById('lastUpdate').textContent='Mis à jour '+new Date().toLocaleTimeString('fr-FR');startCountdown();}catch(e){dot.className='status-dot error';errBar.style.display='block';if(manual)document.getElementById('results').innerHTML='<div class="empty">Erreur de connexion — réessaie dans quelques secondes</div>';}btn.classList.remove('spinning');}
-function scheduleAutoRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{loadData(false);scheduleAutoRefresh();},30*60*1000);}
-loadData(true);scheduleAutoRefresh();startCountdown();
+let allPosts=[],currentFilter='all',refreshTimer=null,countdownTimer=null,mins=30;
+const AVA=['ava-0','ava-1','ava-2','ava-3','ava-4'];
+function av(n){return AVA[(n||'?').charCodeAt(0)%AVA.length]}
+
+function age(ts){
+  if(!ts)return{l:'?',isNew:false};
+  const d=(Date.now()/1000-ts),h=d/3600,j=d/86400;
+  if(h<24)return{l:"aujourd'hui",isNew:true};
+  if(j<2)return{l:'hier',isNew:true};
+  if(j<7)return{l:'il y a '+Math.floor(j)+'j',isNew:false};
+  if(j<30)return{l:'il y a '+Math.floor(j/7)+'sem',isNew:false};
+  return{l:'il y a '+Math.floor(j/30)+'mois',isNew:false};
+}
+
+function heat(p){
+  const t=(p.title+' '+p.text).toLowerCase();
+  if(p.source==='Trustpilot'||t.includes('bilan de comp')||t.includes('cpf')||t.includes('financer'))return'hot';
+  if(t.includes('burn')||t.includes('reconversion')||t.includes('changer de m')||t.includes('souffrance')||t.includes('rupture')||t.includes('plus de sens')||t.includes('demission'))return'warm';
+  return'cold';
+}
+
+function score(p){
+  const t=(p.title+' '+p.text).toLowerCase();
+  let s=20;
+  if(t.includes('bilan de comp'))s+=35;
+  if(t.includes('cpf'))s+=25;
+  if(t.includes('financer'))s+=20;
+  if(p.source==='Trustpilot')s+=20;
+  if(t.includes('reconversion'))s+=15;
+  if(t.includes('burn'))s+=12;
+  if(t.includes('souffrance'))s+=10;
+  if(p.score>10)s+=5;
+  const j=(Date.now()/1000-(p.date||0))/86400;
+  if(j<1)s+=8;else if(j<3)s+=4;
+  return Math.min(s,99);
+}
+
+function why(p){
+  const t=(p.title+' '+p.text).toLowerCase();
+  if(p.source==='Trustpilot')return'A déjà fait un bilan chez un concurrent et en est déçu. Cherche activement un meilleur organisme. Signal le plus fort possible : la décision est prise, il manque juste le bon interlocuteur.';
+  if(t.includes('bilan de comp')&&t.includes('cpf'))return'Mentionne explicitement le bilan de compétences et le CPF. Déjà dans la démarche, probablement en train de comparer les organismes. Contacter maintenant.';
+  if(t.includes('bilan de comp'))return'A terminé ou envisage un bilan de compétences. En phase de décision active. Le timing est parfait pour proposer un accompagnement.';
+  if(t.includes('burn'))return'En sortie de burn-out, cherche à se reconstruire professionnellement. Très réceptif à un accompagnement bienveillant. Approche douce recommandée — proposer un premier échange sans engagement.';
+  if(t.includes('reconversion'))return'Réflexion active sur une reconversion. Cherche de la clarté sur son projet. Le bilan CPF est exactement l'outil dont il a besoin — mais il ne le sait peut-être pas encore.';
+  if(t.includes('rupture')||t.includes('licenci'))return'Rupture conventionnelle ou licenciement. Personne disponible et motivée à rebondir. Fenêtre d'opportunité courte — à contacter rapidement.';
+  return'Signal de souffrance professionnelle. Peut évoluer vers une demande de reconversion. À suivre de près.';
+}
+
+function msg(p){
+  const t=(p.title+' '+p.text).toLowerCase();
+  const raw=p.author||'';
+  const prenom=raw.startsWith('u/')?raw.slice(2).split('_')[0]:raw.startsWith('@')?raw.slice(1):raw.split(' ')[0];
+  const P=prenom.charAt(0).toUpperCase()+prenom.slice(1).toLowerCase();
+
+  if(p.source==='Trustpilot'){
+    return'Bonjour '+P+', j'ai lu votre avis sur votre bilan et je comprends totalement votre déception — un parcours trop théorique, sans vraiment vous aider à clarifier votre direction, c'est frustrant. Ce que vous décrivez, c'est exactement ce qu'on cherche à éviter. Chez nous, chaque bilan est construit autour de vous : vos contraintes réelles, votre personnalité, ce qui vous donne de l'énergie. Si vous êtes encore en recherche d'un accompagnement sérieux, je serais heureux d'échanger avec vous 20 min — sans engagement, juste pour voir si ce qu'on fait correspond à ce que vous cherchez.';
+  }
+
+  if(t.includes('bilan de comp')&&t.includes('reconversion')&&t.includes('cpf')){
+    const metier=p.title.match(/reconversions+(w+)/i)?.[1]||'nouveau métier';
+    return'Bonjour '+P+', votre post sur votre reconversion m'a parlé. Vous venez de terminer votre bilan — vous êtes dans cette période un peu flottante où on a des pistes mais pas encore de cap solide. C'est exactement le moment où un accompagnement sur mesure peut faire la différence pour transformer ces pistes en projet concret. Vous avez encore du CPF disponible ? Si oui, on pourrait en parler ensemble rapidement.';
+  }
+
+  if(t.includes('bilan de comp')){
+    return'Bonjour '+P+', j'ai vu votre message. La question du bilan de compétences revient souvent à ce moment charnière — on sent qu'on a besoin de se repositionner mais on ne sait pas encore par où commencer. Ce que je vous propose : un échange de 20 min pour comprendre votre situation et voir si notre approche peut vraiment vous aider. C'est gratuit, sans pression, et ça vous donnera déjà des éléments concrets. Ça vous dit ?';
+  }
+
+  if(t.includes('burn')){
+    return'Bonjour '+P+', ce que vous partagez prend du courage. Un an et demi à reconstruire, c'est long — et la question "par où je repars professionnellement" est souvent la dernière qu'on ose se poser, alors qu'elle est pourtant essentielle. Un bilan de compétences peut être un espace pour faire le point sans pression, à votre rythme. C'est entièrement financé par votre CPF, donc aucun coût. Si jamais vous ressentez le besoin d'en parler, je suis disponible — aucune obligation.';
+  }
+
+  if(t.includes('reconversion')){
+    return'Bonjour '+P+', j'ai lu votre situation avec attention. Tourner en rond pendant 2 ans sur une reconversion, c'est épuisant — surtout quand on a envie de bouger mais qu'on ne sait pas vers quoi. Le bilan de compétences CPF est fait exactement pour ça : clarifier ce qui vous correspond vraiment, identifier des pistes concrètes, et construire un plan. Et c'est 100% financé, sans avancer un euro. Envie qu'on en parle ?';
+  }
+
+  return'Bonjour '+P+', votre message m'a interpellé. La situation que vous décrivez — ne plus se sentir à sa place, chercher un sens à ce qu'on fait — c'est souvent le signe qu'il est temps de prendre du recul. Un bilan de compétences peut vraiment aider à y voir plus clair, et c'est entièrement financé par votre CPF. Je serais heureux d'en discuter avec vous si ça vous intéresse.';
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function srcTag(s){
+  if(s==='YouTube')return'<span class="tag tag-src tag-yt">YouTube</span>';
+  if(s==='Trustpilot')return'<span class="tag tag-src tag-tp">Trustpilot</span>';
+  return'<span class="tag tag-src">Reddit</span>';
+}
+
+function setFilter(f){
+  currentFilter=f;
+  ['all','hot','warm','cold'].forEach(x=>{
+    document.getElementById('f-'+x).className='fbtn'+(x===f?' active-'+f:'');
+  });
+  renderPosts();
+}
+
+function renderPosts(){
+  const base=currentFilter==='all'?allPosts:allPosts.filter(p=>p.h===currentFilter);
+  const mode=document.getElementById('sortSel').value;
+  const sorted=[...base].sort((a,b)=>{
+    if(mode==='heat'){const r={hot:0,warm:1,cold:2};return r[a.h]-r[b.h]||(b.date||0)-(a.date||0);}
+    return(b.date||0)-(a.date||0);
+  });
+  const box=document.getElementById('results');
+  if(!sorted.length){box.innerHTML='<div class="empty">Aucun signal pour ce filtre</div>';return;}
+  const g={hot:[],warm:[],cold:[]};
+  sorted.forEach(p=>g[p.h].push(p));
+  const labels={hot:'À CONTACTER MAINTENANT',warm:'EN RÉFLEXION',cold:'À SURVEILLER'};
+  let html='';
+  ['hot','warm','cold'].forEach(h=>{
+    if(!g[h].length)return;
+    const nc=g[h].filter(p=>age(p.date).isNew).length;
+    html+=`<div class="sec ${h}">${labels[h]}<div class="sec-line"></div><span class="sec-n">${g[h].length}</span>${nc?`<span class="new-pill">${nc} nouveau${nc>1?'x':''}</span>`:''}</div>`;
+    g[h].forEach(p=>{
+      const a=age(p.date),s=p.s,m=p.m,w=p.w,ini=(p.author||'?').substring(0,2).toUpperCase(),isUrg=h==='hot';
+      const msgEsc=esc(m);
+      html+=`<div class="card${isUrg?' is-urgent':a.isNew?' is-new':''}">
+<div class="card-top">
+  <div class="card-who">
+    <div class="ava ${av(p.author)}">${ini}</div>
+    <div><div class="who-name">${esc(p.author)}</div><div class="who-meta">${a.l} · ${esc(p.subreddit||p.source)} · ${esc(p.source)}</div></div>
+  </div>
+  <div class="tags">
+    ${a.isNew?'<span class="tag tag-new">nouveau</span>':''}
+    ${srcTag(p.source)}
+    <span class="tag tag-${h}">${h==='hot'?'à contacter':h==='warm'?'en réflexion':'à surveiller'}</span>
+  </div>
+</div>
+<div class="card-title">${esc(p.title)}</div>
+<div class="card-txt">${esc(p.text.substring(0,220))}${p.text.length>220?'...':''}</div>
+<div class="why-box">
+  <div class="why-row"><div class="why-dot"></div><span class="why-lbl">Pourquoi ce prospect</span><span class="why-pct">${s} %</span></div>
+  <div class="why-track"><div class="why-prog" style="width:${s}%"></div></div>
+  <div class="why-txt">${w}</div>
+</div>
+<div class="msg-box">
+  <div class="msg-head"><div class="msg-dot"></div><span class="msg-lbl">Message personnalisé</span><button class="msg-regen">↻ regénérer</button></div>
+  <div class="msg-txt">${msgEsc}</div>
+</div>
+<div class="card-foot">
+  <button class="btn-main btn-${h==='hot'?'hot':h==='warm'?'warm':'sec'}" onclick="this.textContent='✓ Envoyé'">Envoyer</button>
+  <button class="btn-sec" onclick="navigator.clipboard?.writeText(${JSON.stringify(m)});this.textContent='✓ Copié';setTimeout(()=>this.textContent='Copier',2000)">Copier</button>
+  <button class="btn-sec" onclick="this.closest('.card').style.opacity='.3';this.closest('.card').style.pointerEvents='none'">Archiver</button>
+  <span class="post-link" onclick="window.open(${JSON.stringify(p.url)},'_blank')">Voir le post →</span>
+</div>
+</div>`;
+    });
+  });
+  box.innerHTML=html;
+}
+
+function updateStats(){
+  const hot=allPosts.filter(p=>p.h==='hot'),warm=allPosts.filter(p=>p.h==='warm'),cold=allPosts.filter(p=>p.h==='cold'),tot=allPosts.length;
+  document.getElementById('sTotal').textContent=tot;
+  document.getElementById('sHot').textContent=hot.length;
+  document.getElementById('sWarm').textContent=warm.length;
+  document.getElementById('sCold').textContent=cold.length;
+  document.getElementById('cnt-hot').textContent=hot.length;
+  document.getElementById('cnt-warm').textContent=warm.length;
+  if(tot>0){
+    document.getElementById('bHot').style.width=Math.round(hot.length/tot*100)+'%';
+    document.getElementById('bWarm').style.width=Math.round(warm.length/tot*100)+'%';
+    document.getElementById('bCold').style.width=Math.round(cold.length/tot*100)+'%';
+  }
+}
+
+function startCountdown(){
+  clearInterval(countdownTimer);mins=30;
+  document.getElementById('nextRefresh').textContent=mins;
+  countdownTimer=setInterval(()=>{mins--;if(mins<=0)mins=30;document.getElementById('nextRefresh').textContent=mins;},60000);
+}
+
+async function loadData(manual=false){
+  const btn=document.getElementById('refreshBtn'),err=document.getElementById('errBar');
+  btn.classList.add('spinning');
+  if(manual)document.getElementById('results').innerHTML='<div class="loading"><div class="spinner"></div>Analyse des signaux...</div>';
+  try{
+    const r=await fetch('/search');
+    if(!r.ok)throw new Error();
+    const data=await r.json();
+    err.style.display='none';
+    const seen=new Set();
+    allPosts=data.posts.filter(p=>{if(seen.has(p.id))return false;seen.add(p.id);return true;}).map(p=>({...p,h:heat(p),s:score(p),w:why(p),m:msg(p)}));
+    updateStats();renderPosts();
+    document.getElementById('lastUpdate').textContent='Mis à jour à '+new Date().toLocaleTimeString('fr-FR');
+    startCountdown();
+  }catch(e){
+    err.style.display='block';
+    if(manual)document.getElementById('results').innerHTML='<div class="empty">Erreur de connexion — réessaie dans quelques secondes</div>';
+  }
+  btn.classList.remove('spinning');
+}
+function scheduleAuto(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{loadData();scheduleAuto();},30*60*1000);}
+loadData(true);scheduleAuto();startCountdown();
 </script>
 </body>
 </html>
