@@ -9,78 +9,303 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .topbar{background:#1a1a1a;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
 .topbar h1{font-size:15px;font-weight:600}
 .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+.dot.loading{background:#f59e0b}
+.dot.error{background:#ef4444;animation:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.topbar-right{display:flex;align-items:center;gap:14px}
+#lastUpdate{font-size:11px;color:#aaa}
+#autoRefreshInfo{font-size:10px;color:#666;background:#2a2a2a;padding:3px 8px;border-radius:10px}
 .container{padding:20px;max-width:1100px;margin:0 auto}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e5e3dc}
-.stat-n{font-size:26px;font-weight:700}.stat-l{font-size:11px;color:#888;margin-top:2px}
+.stat{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e5e3dc;position:relative;overflow:hidden}
+.stat-n{font-size:26px;font-weight:700}
+.stat-l{font-size:11px;color:#888;margin-top:2px}
+.stat-new{position:absolute;top:8px;right:10px;font-size:9px;font-weight:700;background:#fef3c7;color:#d97706;padding:2px 6px;border-radius:8px}
 .toolbar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
 .filter-btn{padding:6px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;transition:all .15s}
 .filter-btn.active-hot{background:#fce4e1;border-color:#c0392b;color:#922b21;font-weight:600}
 .filter-btn.active-warm{background:#fef9e7;border-color:#d68910;color:#7d6608;font-weight:600}
 .filter-btn.active-cold{background:#eafaf1;border-color:#27ae60;color:#1e5631;font-weight:600}
 .filter-btn.active-all{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.refresh-btn{margin-left:auto;padding:8px 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer}
+.sort-select{padding:6px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;outline:none}
+.refresh-btn{margin-left:auto;padding:8px 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s}
 .refresh-btn:hover{background:#333}
+.refresh-btn.spinning .spin-icon{animation:spin .7s linear infinite;display:inline-block}
 .cards{display:flex;flex-direction:column;gap:10px}
-.card{background:#fff;border-radius:12px;padding:16px;border:1px solid #e5e3dc;border-left:4px solid #ddd;animation:fadeIn .25s ease}
+.card{background:#fff;border-radius:12px;padding:16px;border:1px solid #e5e3dc;border-left:4px solid #ddd;animation:fadeIn .25s ease;position:relative}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.card.hot{border-left-color:#c0392b}.card.warm{border-left-color:#e67e22}.card.cold{border-left-color:#27ae60}
+.card.hot{border-left-color:#c0392b}
+.card.warm{border-left-color:#e67e22}
+.card.cold{border-left-color:#27ae60}
+.card.is-new{box-shadow:0 0 0 2px #fbbf24}
+.badge-new{font-size:9px;font-weight:700;background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:8px;border:1px solid #fcd34d}
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
 .card-left{display:flex;gap:10px;align-items:center}
 .ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.card-name{font-size:14px;font-weight:600}.card-meta{font-size:11px;color:#888;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
-.badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.card-name{font-size:14px;font-weight:600}
+.card-meta{font-size:11px;color:#888;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.age-badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:8px}
+.age-today{background:#dcfce7;color:#166534}
+.age-week{background:#dbeafe;color:#1e40af}
+.age-old{background:#f3f4f6;color:#6b7280}
+.badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start}
 .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:9px}
-.b-hot{background:#fce4e1;color:#922b21}.b-warm{background:#fef5e7;color:#7d6608}.b-cold{background:#eafaf1;color:#1e5631}.b-kw{background:#f3e8ff;color:#6b21a8}
+.b-hot{background:#fce4e1;color:#922b21}
+.b-warm{background:#fef5e7;color:#7d6608}
+.b-cold{background:#eafaf1;color:#1e5631}
+.b-kw{background:#f3e8ff;color:#6b21a8}
 .title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:6px}
 .text{font-size:13px;color:#555;line-height:1.6;background:#f8f7f4;border-left:2px solid #ddd;padding:8px 12px;border-radius:0 6px 6px 0;margin-bottom:8px}
 .analysis{font-size:12px;color:#444;background:#f0f0ee;border-radius:7px;padding:8px 12px;line-height:1.5}
 .analysis b{color:#1a1a1a}
 .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
-.src-link{font-size:12px;color:#2563eb;text-decoration:none}.src-link:hover{text-decoration:underline}
+.src-link{font-size:12px;color:#2563eb;text-decoration:none}
+.src-link:hover{text-decoration:underline}
 .loading{text-align:center;padding:60px;color:#888}
 .spinner{width:32px;height:32px;border:2px solid #eee;border-top-color:#1a1a1a;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty{text-align:center;padding:60px;color:#bbb;font-size:14px}
 .group-title{font-size:13px;font-weight:700;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
 .count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+.new-count{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+.error-bar{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:13px;color:#991b1b;display:none}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div><h1><span class="dot"></span>Veille Reconversion Pro - Bilan de competences CPF</h1></div>
-  <span id="lastUpdate" style="font-size:11px;color:#888">Pret</span>
+  <div><h1><span class="dot" id="statusDot"></span>Veille Reconversion Pro — Bilan de compétences CPF</h1></div>
+  <div class="topbar-right">
+    <span id="autoRefreshInfo">⏱ Actu. auto dans <b id="nextRefresh">30</b> min</span>
+    <span id="lastUpdate" style="font-size:11px;color:#aaa">Jamais mis à jour</span>
+  </div>
 </div>
 <div class="container">
+  <div id="errorBar" class="error-bar">⚠️ Erreur de connexion — Render se réveille, réessai dans quelques secondes...</div>
   <div class="stats">
-    <div class="stat"><div class="stat-n" id="sTotal">0</div><div class="stat-l">Posts analyses</div></div>
-    <div class="stat"><div class="stat-n" id="sHot" style="color:#c0392b">0</div><div class="stat-l">Prospects chauds</div></div>
-    <div class="stat"><div class="stat-n" id="sWarm" style="color:#e67e22">0</div><div class="stat-l">Prospects tiedesdes</div></div>
-    <div class="stat"><div class="stat-n" id="sCold" style="color:#27ae60">0</div><div class="stat-l">Veille froide</div></div>
+    <div class="stat"><div class="stat-n" id="sTotal">—</div><div class="stat-l">Posts analysés</div></div>
+    <div class="stat"><div class="stat-n" id="sHot" style="color:#c0392b">—</div><div class="stat-l">Prospects chauds</div><div class="stat-new" id="sHotNew" style="display:none"></div></div>
+    <div class="stat"><div class="stat-n" id="sWarm" style="color:#e67e22">—</div><div class="stat-l">Prospects tièdes</div><div class="stat-new" id="sWarmNew" style="display:none"></div></div>
+    <div class="stat"><div class="stat-n" id="sCold" style="color:#27ae60">—</div><div class="stat-l">Veille froide</div></div>
   </div>
   <div class="toolbar">
     <button class="filter-btn active-all" onclick="setFilter('all')" id="f-all">Tous</button>
-    <button class="filter-btn" onclick="setFilter('hot')" id="f-hot">Chauds</button>
-    <button class="filter-btn" onclick="setFilter('warm')" id="f-warm">Tiedesdes</button>
-    <button class="filter-btn" onclick="setFilter('cold')" id="f-cold">Froid</button>
-    <button class="refresh-btn" onclick="loadData()">Actualiser Reddit</button>
+    <button class="filter-btn" onclick="setFilter('hot')" id="f-hot">🔴 Chauds</button>
+    <button class="filter-btn" onclick="setFilter('warm')" id="f-warm">🟡 Tièdes</button>
+    <button class="filter-btn" onclick="setFilter('cold')" id="f-cold">🟢 Froid</button>
+    <select class="sort-select" id="sortSelect" onchange="renderPosts()">
+      <option value="date">🕐 Plus récents d'abord</option>
+      <option value="heat">🔥 Par chaleur</option>
+      <option value="score">⬆️ Par score Reddit</option>
+    </select>
+    <button class="refresh-btn" onclick="loadData(true)" id="refreshBtn"><span class="spin-icon">↻</span> Actualiser</button>
   </div>
-  <div id="results"><div class="loading"><div class="spinner"></div>Chargement...</div></div>
+  <div id="results"><div class="loading"><div class="spinner"></div>Récupération des posts Reddit...</div></div>
 </div>
+
 <script>
-var AVA=[['#fdebd0','#935116'],['#eaf0fb','#154360'],['#e8f0e8','#2a5e2d'],['#fce4e1','#922b21'],['#fef9e7','#7d6608'],['#f4ecf7','#6c3483'],['#d5f5e3','#1e5631'],['#fde8d8','#7b241c']];
-var allPosts=[],currentFilter='all';
-function ava(n){var c=AVA[(n||'A').charCodeAt(0)%AVA.length];return 'background:'+c[0]+';color:'+c[1];}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function fmtDate(ts){if(!ts)return '?';return new Date(ts*1000).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'});}
-function qualifyHeat(p){var t=(p.title+' '+p.text+' '+(p.keyword||'')).toLowerCase();if(t.indexOf('bilan de comp')>-1||t.indexOf('cpf')>-1)return 'hot';if(t.indexOf('burn')>-1||t.indexOf('reconversion')>-1||t.indexOf('changer de m')>-1||t.indexOf('souffrance')>-1||t.indexOf('rupture')>-1)return 'warm';return 'cold';}
-function getAnalysis(p){var t=(p.title+' '+p.text).toLowerCase();if(p.heat==='hot')return 'Mentionne bilan CPF - prospect prioritaire.';if(t.indexOf('burn')>-1)return 'Burn-out mentionne - tres receptif.';if(t.indexOf('reconversion')>-1)return 'En reflexion active - ideal pour bilan CPF.';return 'Signal a surveiller.';}
-function setFilter(f){currentFilter=f;['all','hot','warm','cold'].forEach(function(x){document.getElementById('f-'+x).className='filter-btn'+(x===f?' active-'+f:'');});renderPosts();}
-function updateStats(){document.getElementById('sTotal').textContent=allPosts.length;document.getElementById('sHot').textContent=allPosts.filter(function(p){return p.heat==='hot';}).length;document.getElementById('sWarm').textContent=allPosts.filter(function(p){return p.heat==='warm';}).length;document.getElementById('sCold').textContent=allPosts.filter(function(p){return p.heat==='cold';}).length;}
-function renderPosts(){var filtered=currentFilter==='all'?allPosts:allPosts.filter(function(p){return p.heat===currentFilter;});var box=document.getElementById('results');if(!filtered.length){box.innerHTML='<div class=empty>Aucun resultat</div>';return;}var groups={hot:[],warm:[],cold:[]};filtered.forEach(function(p){groups[p.heat].push(p);});var labels={hot:'Prospects chauds',warm:'Tiedesdes',cold:'Veille froide'};var bc={hot:'b-hot',warm:'b-warm',cold:'b-cold'};var cc={hot:'#fce4e1',warm:'#fef5e7',cold:'#eafaf1'};var tc={hot:'#922b21',warm:'#7d6608',cold:'#1e5631'};var html='';['hot','warm','cold'].forEach(function(h){if(!groups[h].length)return;html+='<div class=group-title>'+labels[h]+'<span class=count style=background:'+cc[h]+';color:'+tc[h]+'>'+groups[h].length+'</span></div><div class=cards>';groups[h].forEach(function(p){var init=(p.author||'?').substring(0,2).toUpperCase();html+='<div class="card '+h+'"><div class=card-top><div class=card-left><div class=ava style="'+ava(p.author||'A')+'">'+init+'</div><div><div class=card-name>u/'+esc(p.author)+'</div><div class=card-meta><span>'+fmtDate(p.date)+'</span><span>r/'+esc(p.subreddit)+'</span><span>+'+p.score+'</span><span>'+p.comments+'</span></div></div></div><div class=badges><span class="badge b-kw">'+esc(p.keyword)+'</span><span class="badge '+bc[h]+'">'+(h==='hot'?'CHAUD':h==='warm'?'TIEDE':'FROID')+'</span></div></div><div class=title>'+esc(p.title)+'</div><div class=text>'+esc(p.text.substring(0,300))+'...</div><div class=analysis><b>Analyse:</b> '+getAnalysis(p)+'</div><div class=card-foot><a class=src-link href='+p.url+' target=_blank>Voir sur Reddit</a></div></div>';});html+='</div>';});box.innerHTML=html;}
-async function loadData(){document.getElementById('results').innerHTML='<div class=loading><div class=spinner></div>Recherche Reddit...</div>';try{var r=await fetch('/search');var data=await r.json();var seen={};data.posts.forEach(function(p){if(!seen[p.id]){seen[p.id]=1;p.heat=qualifyHeat(p);allPosts.push(p);}});updateStats();renderPosts();document.getElementById('lastUpdate').textContent='Mis a jour '+new Date().toLocaleTimeString('fr-FR');}catch(e){document.getElementById('results').innerHTML='<div class=empty>Erreur serveur</div>';}}
-loadData();
+let allPosts = [];
+let currentFilter = 'all';
+let refreshTimer = null;
+let countdownTimer = null;
+let minutesLeft = 30;
+
+const AVA_COLORS = [
+  ['#fdebd0','#935116'],['#eaf0fb','#154360'],['#e8f0e8','#2a5e2d'],
+  ['#fce4e1','#922b21'],['#fef9e7','#7d6608'],['#f4ecf7','#6c3483'],
+  ['#d5f5e3','#1e5631'],['#fde8d8','#7b241c']
+];
+
+function avaStyle(name) {
+  const c = AVA_COLORS[(name||'A').charCodeAt(0) % AVA_COLORS.length];
+  return 'background:'+c[0]+';color:'+c[1];
+}
+
+function getAge(ts) {
+  if (!ts) return {label:'?', cls:'age-old', isNew:false};
+  const diff = (Date.now() / 1000) - ts;
+  const hours = diff / 3600;
+  const days = diff / 86400;
+  if (hours < 24) return {label:"Aujourd'hui", cls:'age-today', isNew:true};
+  if (days < 2) return {label:'Hier', cls:'age-today', isNew:true};
+  if (days < 7) return {label:'Il y a '+Math.floor(days)+'j', cls:'age-week', isNew:false};
+  if (days < 30) return {label:'Il y a '+Math.floor(days/7)+'sem', cls:'age-old', isNew:false};
+  return {label:'Il y a '+Math.floor(days/30)+'mois', cls:'age-old', isNew:false};
+}
+
+function qualifyHeat(post) {
+  const txt = (post.title + ' ' + post.text).toLowerCase();
+  const kw = post.keyword || '';
+  if (txt.includes('bilan de comp') || txt.includes('cpf') || txt.includes('financer ma formation') || kw.includes('bilan')) return 'hot';
+  if (txt.includes('burn') || txt.includes('reconversion') || txt.includes('changer de m') || txt.includes('plus de sens') || txt.includes('rupture conventionnelle') || txt.includes("j'aime pas") || txt.includes('desespere') || txt.includes('degoute') || txt.includes('plus de motivation') || txt.includes('souffrance')) return 'warm';
+  return 'cold';
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['all','hot','warm','cold'].forEach(x => {
+    document.getElementById('f-'+x).className = 'filter-btn' + (x === f ? ' active-'+f : '');
+  });
+  renderPosts();
+}
+
+function getAnalysis(p) {
+  const txt = (p.title + ' ' + p.text).toLowerCase();
+  if (p.heat === 'hot') return 'A déjà entamé une démarche concrète (bilan, CPF, formation) — prospect à contacter en priorité.';
+  if (txt.includes('burn')) return 'Burn-out mentionné — personne en souffrance active, très réceptive à un accompagnement bilan de compétences.';
+  if (txt.includes('reconversion')) return 'En réflexion active sur sa reconversion — moment idéal pour présenter le bilan de compétences CPF.';
+  if (txt.includes('changer')) return "Envie de changer exprimée — signal d'intention, à suivre et recontacter.";
+  if (txt.includes('desespere') || txt.includes('degoute')) return 'Personne en détresse professionnelle — approche douce recommandée, proposer un premier échange gratuit.';
+  return 'Signal faible — à surveiller pour détecter une évolution vers une intention plus forte.';
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function sortPosts(posts) {
+  const mode = document.getElementById('sortSelect').value;
+  const sorted = [...posts];
+  if (mode === 'date') {
+    sorted.sort((a,b) => (b.date||0) - (a.date||0));
+  } else if (mode === 'heat') {
+    const rank = {hot:0, warm:1, cold:2};
+    sorted.sort((a,b) => rank[a.heat] - rank[b.heat] || (b.date||0) - (a.date||0));
+  } else if (mode === 'score') {
+    sorted.sort((a,b) => (b.score||0) - (a.score||0));
+  }
+  return sorted;
+}
+
+function renderPosts() {
+  const filtered = currentFilter === 'all' ? allPosts : allPosts.filter(p => p.heat === currentFilter);
+  const sorted = sortPosts(filtered);
+  const box = document.getElementById('results');
+  if (!sorted.length) {
+    box.innerHTML = '<div class="empty">Aucun résultat pour ce filtre</div>';
+    return;
+  }
+  const groups = {hot:[], warm:[], cold:[]};
+  sorted.forEach(p => groups[p.heat].push(p));
+  const labels = {hot:'🔴 Prospects chauds', warm:'🟡 Tièdes — signal reconversion', cold:'🟢 Veille froide'};
+  const bc = {hot:'b-hot', warm:'b-warm', cold:'b-cold'};
+  const cc = {hot:'#fce4e1', warm:'#fef5e7', cold:'#eafaf1'};
+  const tc = {hot:'#922b21', warm:'#7d6608', cold:'#1e5631'};
+  let html = '';
+  ['hot','warm','cold'].forEach(h => {
+    if (!groups[h].length) return;
+    const newCount = groups[h].filter(p => getAge(p.date).isNew).length;
+    html += '<div class="group-title">'+labels[h]+
+      '<span class="count" style="background:'+cc[h]+';color:'+tc[h]+'">'+groups[h].length+'</span>'+
+      (newCount ? '<span class="new-count">'+newCount+' nouveau'+(newCount>1?'x':'')+'</span>' : '')+
+      '</div>';
+    html += '<div class="cards">';
+    groups[h].forEach(p => {
+      const initials = (p.author||'?').substring(0,2).toUpperCase();
+      const age = getAge(p.date);
+      html += '<div class="card '+h+(age.isNew?' is-new':'')+'">' +
+        '<div class="card-top">' +
+          '<div class="card-left">' +
+            '<div class="ava" style="'+avaStyle(p.author)+'">'+initials+'</div>' +
+            '<div>' +
+              '<div class="card-name">u/'+esc(p.author)+'</div>' +
+              '<div class="card-meta">' +
+                '<span class="age-badge '+age.cls+'">'+age.label+'</span>' +
+                '<span>📌 r/'+esc(p.subreddit)+'</span>' +
+                '<span>⬆️ '+p.score+'</span>' +
+                '<span>💬 '+p.comments+'</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="badges">' +
+            (age.isNew ? '<span class="badge-new">✨ NOUVEAU</span>' : '') +
+            '<span class="badge b-kw">'+esc(p.keyword)+'</span>' +
+            '<span class="badge '+bc[h]+'">'+(h==='hot'?'CHAUD':h==='warm'?'TIÈDE':'FROID')+'</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="title">'+esc(p.title)+'</div>' +
+        '<div class="text">'+esc(p.text.substring(0,300))+'...</div>' +
+        '<div class="analysis"><b>Analyse :</b> '+getAnalysis(p)+'</div>' +
+        '<div class="card-foot">' +
+          '<a class="src-link" href="'+p.url+'" target="_blank">Voir le post Reddit →</a>' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+  });
+  box.innerHTML = html;
+}
+
+function updateStats() {
+  const hot = allPosts.filter(p=>p.heat==='hot');
+  const warm = allPosts.filter(p=>p.heat==='warm');
+  document.getElementById('sTotal').textContent = allPosts.length;
+  document.getElementById('sHot').textContent = hot.length;
+  document.getElementById('sWarm').textContent = warm.length;
+  document.getElementById('sCold').textContent = allPosts.filter(p=>p.heat==='cold').length;
+  const hotNew = hot.filter(p=>getAge(p.date).isNew).length;
+  const warmNew = warm.filter(p=>getAge(p.date).isNew).length;
+  const hotNewEl = document.getElementById('sHotNew');
+  const warmNewEl = document.getElementById('sWarmNew');
+  if (hotNew > 0) { hotNewEl.style.display=''; hotNewEl.textContent = hotNew+' nouveau'+(hotNew>1?'x':''); }
+  else hotNewEl.style.display='none';
+  if (warmNew > 0) { warmNewEl.style.display=''; warmNewEl.textContent = warmNew+' nouveau'+(warmNew>1?'x':''); }
+  else warmNewEl.style.display='none';
+}
+
+function startCountdown() {
+  clearInterval(countdownTimer);
+  minutesLeft = 30;
+  document.getElementById('nextRefresh').textContent = minutesLeft;
+  countdownTimer = setInterval(() => {
+    minutesLeft--;
+    if (minutesLeft <= 0) minutesLeft = 30;
+    document.getElementById('nextRefresh').textContent = minutesLeft;
+  }, 60000);
+}
+
+async function loadData(manual=false) {
+  const dot = document.getElementById('statusDot');
+  const btn = document.getElementById('refreshBtn');
+  const errorBar = document.getElementById('errorBar');
+  dot.className = 'dot loading';
+  btn.classList.add('spinning');
+  if (manual) {
+    document.getElementById('results').innerHTML = '<div class="loading"><div class="spinner"></div>Récupération des posts Reddit...</div>';
+  }
+  try {
+    const r = await fetch('/search');
+    if (!r.ok) throw new Error('Erreur serveur');
+    const data = await r.json();
+    errorBar.style.display = 'none';
+    dot.className = 'dot';
+    const seen = new Set();
+    allPosts = data.posts
+      .filter(p => { if(seen.has(p.id)){return false;} seen.add(p.id); return true; })
+      .map(p => ({...p, heat: qualifyHeat(p)}));
+    updateStats();
+    renderPosts();
+    document.getElementById('lastUpdate').textContent = 'Mis à jour à ' + new Date().toLocaleTimeString('fr-FR');
+    startCountdown();
+  } catch(e) {
+    dot.className = 'dot error';
+    errorBar.style.display = 'block';
+    if (manual) document.getElementById('results').innerHTML = '<div class="empty">Erreur de connexion — réessaie dans quelques secondes</div>';
+  }
+  btn.classList.remove('spinning');
+}
+
+// Auto-refresh toutes les 30 min
+function scheduleAutoRefresh() {
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(() => {
+    loadData(false);
+    scheduleAutoRefresh();
+  }, 30 * 60 * 1000);
+}
+
+loadData(true);
+scheduleAutoRefresh();
+startCountdown();
 </script>
 </body>
 </html>
