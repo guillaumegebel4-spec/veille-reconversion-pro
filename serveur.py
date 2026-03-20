@@ -10,12 +10,16 @@ KEYWORDS = ["reconversion professionnelle", "burn-out", "burnout", "souffrance a
 VALIDATION_WORDS = ["travail", "emploi", "poste", "reconversion", "formation", "metier", "bilan", "cpf", "burn", "licenci", "demission", "rupture", "salaire", "carriere", "professionnel", "entreprise", "manager", "collegue", "patron"]
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
 YOUTUBE_QUERIES = ["reconversion professionnelle temoignage", "burn out travail temoignage", "bilan de competences CPF avis", "changer de metier temoignage"]
-GOOGLE_ALERTS_RSS = [
-    "https://www.google.fr/alerts/feeds/05258671954159722660/14179317318011172716",
-    "https://www.google.fr/alerts/feeds/05258671954159722660/4236035930240063314",
-    "https://www.google.fr/alerts/feeds/05258671954159722660/17234795094043658117",
-    "https://www.google.fr/alerts/feeds/05258671954159722660/11065484875611424753",
-    "https://www.google.fr/alerts/feeds/05258671954159722660/5243583938657747172"
+
+TRUSTPILOT_ORGS = [
+    "chance.co",
+    "karierre.fr",
+    "assessfirst.com",
+    "bilan-de-competences.fr",
+    "coa.fr",
+    "ibc-coaching.fr",
+    "orientaction.fr",
+    "versusmobilite.fr"
 ]
 
 def get_reddit_posts():
@@ -63,36 +67,51 @@ def get_youtube_comments():
             print("YouTube erreur", query, e)
     return results
 
-def get_google_alerts():
+def get_trustpilot_reviews():
     results = []
-    try:
-        import xml.etree.ElementTree as ET
-        headers = {"User-Agent": "Mozilla/5.0 VeilleReconversion/1.0"}
-        for feed_url in GOOGLE_ALERTS_RSS:
-            try:
-                r = requests.get(feed_url, headers=headers, timeout=8)
-                if r.status_code != 200: continue
-                root = ET.fromstring(r.content)
-                ns = {"atom": "http://www.w3.org/2005/Atom"}
-                for entry in root.findall("atom:entry", ns):
-                    try:
-                        title = entry.findtext("atom:title", "", ns)
-                        link = entry.find("atom:link", ns)
-                        url = link.get("href", "") if link is not None else ""
-                        summary = entry.findtext("atom:summary", "", ns) or ""
-                        published = entry.findtext("atom:published", "", ns) or ""
-                        entry_id = entry.findtext("atom:id", "", ns) or feed_url
-                        combined = (title + " " + summary).lower()
-                        if not any(w in combined for w in VALIDATION_WORDS): continue
-                        try: ts = datetime.datetime.strptime(published[:19], "%Y-%m-%dT%H:%M:%S").timestamp()
-                        except: ts = 0
-                        results.append({"id": "ga_"+str(abs(hash(entry_id)))[:12], "author": "Google Alerts", "subreddit": "Web", "title": title[:200], "text": summary[:500], "score": 0, "comments": 0, "url": url, "date": ts, "keyword": "Google Alert", "source": "Google"})
-                    except: continue
-            except Exception as e:
-                print("Google feed erreur:", e)
-                continue
-    except Exception as e:
-        print("Google Alerts global erreur:", e)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "fr-FR,fr;q=0.9"
+    }
+    for org in TRUSTPILOT_ORGS:
+        try:
+            url = "https://fr.trustpilot.com/review/{}".format(org)
+            r = requests.get(url, headers=headers, timeout=12)
+            if r.status_code != 200: continue
+            import re, json
+            match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', r.text, re.DOTALL)
+            if not match: continue
+            data = json.loads(match.group(1))
+            reviews = data.get("props", {}).get("pageProps", {}).get("reviews", [])
+            for rev in reviews:
+                try:
+                    text = rev.get("text", "") or ""
+                    title = rev.get("title", "") or ""
+                    if len(text) < 30: continue
+                    rating = rev.get("rating", 3)
+                    author = rev.get("consumer", {}).get("displayName", "Anonyme")
+                    rev_id = rev.get("id", "")
+                    published = rev.get("dates", {}).get("publishedDate", "")
+                    try: ts = datetime.datetime.strptime(published[:19], "%Y-%m-%dT%H:%M:%S").timestamp()
+                    except: ts = 0
+                    rev_url = "https://fr.trustpilot.com/reviews/{}".format(rev_id)
+                    results.append({
+                        "id": "tp_"+rev_id,
+                        "author": author,
+                        "subreddit": "Trustpilot",
+                        "title": title[:200],
+                        "text": text[:500],
+                        "score": rating,
+                        "comments": 0,
+                        "url": rev_url,
+                        "date": ts,
+                        "keyword": "Avis Trustpilot - " + org,
+                        "source": "Trustpilot"
+                    })
+                except: continue
+        except Exception as e:
+            print("Trustpilot erreur", org, e)
     return results
 
 @app.route("/")
@@ -101,7 +120,7 @@ def index():
 
 @app.route("/search")
 def search():
-    results = get_reddit_posts() + get_youtube_comments() + get_google_alerts()
+    results = get_reddit_posts() + get_youtube_comments() + get_trustpilot_reviews()
     seen = set()
     unique = [item for item in results if not (item["id"] in seen or seen.add(item["id"]))]
     unique.sort(key=lambda x: x.get("date", 0), reverse=True)
